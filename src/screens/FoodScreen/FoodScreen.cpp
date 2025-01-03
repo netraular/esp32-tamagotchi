@@ -1,9 +1,25 @@
 #include "FoodScreen.h"
 #include "../ScreenManager.h"
+#include "../../PersistentDataManager/PersistentDataManager.h"
 
 extern ScreenManager screenManager;
+extern PersistentDataManager persistentDataManager; // Declarar como extern
 
 void FoodScreen::load() {
+    // Cargar datos desde food.json
+    JsonDocument foodData = persistentDataManager.loadData("/data/food.json");
+    if (foodData.isNull()) {
+        Serial.println("Error al cargar food.json");
+        return;
+    }
+
+    // Mostrar los datos en la pantalla
+    for (JsonObject foodItem : foodData.as<JsonArray>()) {
+        const char* name = foodItem["name"];
+        int quantity = foodItem["quantity"];
+        Serial.printf("Comida: %s, Cantidad: %d\n", name, quantity);
+    }
+
     // Crear una etiqueta con el texto "Food"
     label = lv_label_create(lv_scr_act());
     lv_label_set_text(label, "Food");

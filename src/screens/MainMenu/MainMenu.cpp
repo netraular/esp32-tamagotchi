@@ -19,26 +19,46 @@ void MainMenu::update() {
 void MainMenu::handleButtonEvent(const ButtonState& state, const ButtonChange& change) {
     // Manejar la navegación con el botón 1
     if (change.button1Changed && state.button1Pressed) {
-        selectedOption = (selectedOption + 1) % 2; // Cambiar entre las dos opciones
+        selectedOption = (selectedOption + 1) % 4; // Cambiar entre las cuatro opciones
         updateMenu();
     }
 
     // Manejar la selección con el botón 2
     if (change.button2Changed && state.button2Pressed) {
-        if (selectedOption == 0) {
-            screenManager.setScreen("FoodScreen");
-        } else if (selectedOption == 1) {
-            screenManager.setScreen("ButtonsTestScreen");
+        switch (selectedOption) {
+            case 0:
+                screenManager.setScreen("FoodScreen");
+                break;
+            case 1:
+                screenManager.setScreen("ButtonsTestScreen");
+                break;
+            case 2:
+                screenManager.setScreen("SetupScreen");
+                break;
+            case 3:
+                screenManager.setScreen("RestartScreen");
+                break;
         }
     }
 }
 
 void MainMenu::updateMenu() {
     // Actualizar el texto del menú según la opción seleccionada
-    if (selectedOption == 0) {
-        lv_label_set_text(menuLabel, "> FoodScreen\n  ButtonsTestScreen");
-    } else {
-        lv_label_set_text(menuLabel, "  FoodScreen\n> ButtonsTestScreen");
+    const char* menuText;
+    switch (selectedOption) {
+        case 0:
+            menuText = "> FoodScreen\n  ButtonsTestScreen\n  SetupScreen\n  RestartScreen";
+            break;
+        case 1:
+            menuText = "  FoodScreen\n> ButtonsTestScreen\n  SetupScreen\n  RestartScreen";
+            break;
+        case 2:
+            menuText = "  FoodScreen\n  ButtonsTestScreen\n> SetupScreen\n  RestartScreen";
+            break;
+        case 3:
+            menuText = "  FoodScreen\n  ButtonsTestScreen\n  SetupScreen\n> RestartScreen";
+            break;
     }
+    lv_label_set_text(menuLabel, menuText);
     lv_obj_align(menuLabel, LV_ALIGN_CENTER, 0, 0); // Centrar el texto en la pantalla
 }
