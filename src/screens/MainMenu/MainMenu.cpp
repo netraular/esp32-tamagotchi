@@ -43,8 +43,8 @@ void MainMenu::handleButtonEvent(const ButtonState& state, const ButtonChange& c
 }
 
 void MainMenu::updateMenu() {
-    // Actualizar el texto del menú según la opción seleccionada
-    const char* menuText;
+    const char* menuText = "";  // Inicializar con un valor predeterminado
+
     switch (selectedOption) {
         case 0:
             menuText = "> FoodScreen\n  ButtonsTestScreen\n  SetupScreen\n  RestartScreen";
@@ -59,6 +59,7 @@ void MainMenu::updateMenu() {
             menuText = "  FoodScreen\n  ButtonsTestScreen\n  SetupScreen\n> RestartScreen";
             break;
     }
+
     lv_label_set_text(menuLabel, menuText);
     lv_obj_align(menuLabel, LV_ALIGN_CENTER, 0, 0); // Centrar el texto en la pantalla
 }

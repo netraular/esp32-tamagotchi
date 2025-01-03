@@ -5,46 +5,35 @@ PersistentDataManager::PersistentDataManager() {
 }
 
 bool PersistentDataManager::init() {
-    if (!LittleFS.begin()) {
+    if (!LittleFS.begin(true, "/littlefs", 10, "littlefs")) {
         Serial.println("Error al inicializar LittleFS");
         return false;
     }
     Serial.println("LittleFS inicializado correctamente");
 
     // Verificar si el directorio /data existe
-    if (!LittleFS.exists("/data")) {
-        Serial.println("Creando directorio /data...");
-        if (!LittleFS.mkdir("/data")) {
-            Serial.println("Error al crear el directorio /data");
-            return false;
-        }
+    if (!createDirectory("/data")) {
+        Serial.println("Error al crear el directorio /data");
+        return false;
     }
 
     return true;
 }
 
-bool PersistentDataManager::fileExists(const char* filePath) {
-    return LittleFS.exists(filePath);
-}
+bool PersistentDataManager::format() {
+    Serial.println("Formateando LittleFS...");
 
-bool PersistentDataManager::createFile(const char* filePath, const char* initialContent) {
-    File file = LittleFS.open(filePath, "w");
-    if (!file) {
-        Serial.printf("Error al crear el archivo: %s\n", filePath);
+    if (LittleFS.format()) {
+        Serial.println("LittleFS formateado correctamente.");
+        return true;
+    } else {
+        Serial.println("Error al formatear LittleFS.");
         return false;
     }
-    size_t bytesWritten = file.print(initialContent);
-    file.close();
-    if (bytesWritten == 0) {
-        Serial.printf("Error al escribir en el archivo: %s\n", filePath);
-        return false;
-    }
-    Serial.printf("Archivo creado correctamente: %s\n", filePath);
-    return true;
 }
 
 bool PersistentDataManager::createInitialFiles() {
-    if (!fileExists("/data/food.json")) {
+    if (!LittleFS.exists("/data/food.json")) {
         const char* initialFoodData = R"(
         [
             {"id":1,"name":"Apple Pie","hunger":100,"health":5,"happiness":2,"quantity":5,"price":5,"image":"/assets/food/n05ApplePie.c"},
@@ -55,7 +44,7 @@ bool PersistentDataManager::createInitialFiles() {
         }
     }
 
-    if (!fileExists("/data/pet_stats.json")) {
+    if (!LittleFS.exists("/data/pet_stats.json")) {
         const char* initialPetStats = R"(
         {
             "name": "TestName",
@@ -136,4 +125,33 @@ bool PersistentDataManager::saveData(const char* filePath, const JsonDocument& d
     serializeJson(data, file);
     file.close();
     return true;
+}
+
+bool PersistentDataManager::createFile(const char* filePath, const char* initialContent) {
+    File file = LittleFS.open(filePath, "w");
+    if (!file) {
+        Serial.printf("Error al crear el archivo: %s\n", filePath);
+        return false;
+    }
+    size_t bytesWritten = file.print(initialContent);
+    file.close();
+    if (bytesWritten == 0) {
+        Serial.printf("Error al escribir en el archivo: %s\n", filePath);
+        return false;
+    }
+    Serial.printf("Archivo creado correctamente: %s\n", filePath);
+    return true;
+}
+
+bool PersistentDataManager::createDirectory(const char* path) {
+    if (LittleFS.exists(path)) {
+        return true;
+    }
+    if (LittleFS.mkdir(path)) {
+        Serial.printf("Directorio creado correctamente: %s\n", path);
+        return true;
+    } else {
+        Serial.printf("Error al crear el directorio: %s\n", path);
+        return false;
+    }
 }

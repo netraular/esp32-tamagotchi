@@ -1,5 +1,4 @@
 #include <Arduino.h>
-#include <LittleFS.h>
 #include "config.h"
 #include "screens/ScreenManager.h"
 #include "screens/ButtonsTestScreen/ButtonsTestScreen.h"
@@ -7,7 +6,7 @@
 #include "screens/MainMenu/MainMenu.h"
 #include "screens/SetupScreen/SetupScreen.h"
 #include "screens/RestartScreen/RestartScreen.h"
-#include "PersistentDataManager/PersistentDataManager.h" // Incluir el archivo de la clase
+#include "PersistentDataManager/PersistentDataManager.h"
 
 // Objetos globales
 TFT_eSPI tft;
@@ -17,48 +16,32 @@ FoodScreen foodScreen;
 MainMenu mainMenu;
 SetupScreen setupScreen;
 RestartScreen restartScreen;
-
-// Definir la instancia de PersistentDataManager
 PersistentDataManager persistentDataManager;
 
 // Intervalo de tiempo para 30 FPS (en milisegundos)
 const uint32_t FRAME_INTERVAL = 1000 / 30;
 
-// Función para formatear LittleFS
-void formatLittleFS() {
-    Serial.println("Formateando LittleFS...");
-
-    if (LittleFS.format()) {
-        Serial.println("LittleFS formateado correctamente.");
-    } else {
-        Serial.println("Error al formatear LittleFS.");
-    }
-}
-
 void setup() {
     Serial.begin(115200);
     Serial.println("Inicializando el sistema...");
 
-    // Inicializar LittleFS
-    if (!LittleFS.begin()) {
+    // Inicializar LittleFS y crear archivos iniciales
+    if (!persistentDataManager.init()) {
         Serial.println("Error al inicializar LittleFS. Intentando formatear...");
-        formatLittleFS();
-
-        // Intentar inicializar nuevamente después de formatear
-        if (!LittleFS.begin()) {
+        if (!persistentDataManager.format()) {
+            Serial.println("Error al formatear LittleFS.");
+            return;
+        }
+        if (!persistentDataManager.init()) {
             Serial.println("Error al inicializar LittleFS después de formatear.");
             return;
         }
     }
-    Serial.println("LittleFS inicializado correctamente");
 
-    // Verificar si el directorio /data existe
-    if (!LittleFS.exists("/data")) {
-        Serial.println("Creando directorio /data...");
-        if (!LittleFS.mkdir("/data")) {
-            Serial.println("Error al crear el directorio /data");
-            return;
-        }
+    // Crear archivos iniciales si no existen
+    if (!persistentDataManager.createInitialFiles()) {
+        Serial.println("Error al crear archivos iniciales.");
+        return;
     }
 
     // Configurar pines

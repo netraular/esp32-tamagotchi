@@ -1,25 +1,24 @@
 #include "ScreenManager.h"
-#include "config.h" // Incluir config.h
-#include <lvgl.h>
+#include "config.h"
 
 ScreenManager::ScreenManager(TFT_eSPI& tft) : tft(tft), currentScreen(nullptr) {
     // Inicializar los botones
     buttons[0].pin = BUTTON1_PIN;
     buttons[0].state = HIGH;
-    buttons[0].pressed = false; // Inicialmente, el botón no está presionado
-    buttons[0].released = true; // Inicialmente, el botón está liberado
+    buttons[0].pressed = false;
+    buttons[0].released = true;
     buttons[0].lastDebounceTime = 0;
 
     buttons[1].pin = BUTTON2_PIN;
     buttons[1].state = HIGH;
-    buttons[1].pressed = false; // Inicialmente, el botón no está presionado
-    buttons[1].released = true; // Inicialmente, el botón está liberado
+    buttons[1].pressed = false;
+    buttons[1].released = true;
     buttons[1].lastDebounceTime = 0;
 
     buttons[2].pin = BUTTON3_PIN;
     buttons[2].state = HIGH;
-    buttons[2].pressed = false; // Inicialmente, el botón no está presionado
-    buttons[2].released = true; // Inicialmente, el botón está liberado
+    buttons[2].pressed = false;
+    buttons[2].released = true;
     buttons[2].lastDebounceTime = 0;
 }
 
@@ -70,21 +69,6 @@ void ScreenManager::handleButtons() {
 
     // Verificar si al menos un botón ha cambiado
     if (change.button1Changed || change.button2Changed || change.button3Changed) {
-
-        // Imprimir el estado y los cambios de los botones
-        // Serial.print("State: B1=");
-        // Serial.print(currentState.button1Pressed ? "ON " : "OFF ");
-        // Serial.print("B2=");
-        // Serial.print(currentState.button2Pressed ? "ON " : "OFF ");
-        // Serial.print("B3=");
-        // Serial.print(currentState.button3Pressed ? "ON " : "OFF ");
-        // Serial.print(" | Change: B1=");
-        // Serial.print(change.button1Changed ? "YES " : "NO ");
-        // Serial.print("B2=");
-        // Serial.print(change.button2Changed ? "YES " : "NO ");
-        // Serial.print("B3=");
-        // Serial.println(change.button3Changed ? "YES" : "NO");
-
         // Notificar a la pantalla actual sobre los cambios en los botones
         if (currentScreen != nullptr) {
             currentScreen->handleButtonEvent(currentState, change);
@@ -95,36 +79,38 @@ void ScreenManager::handleButtons() {
     previousState = currentState;
 }
 
-
 void ScreenManager::lvgl_init() {
     tft.begin();
     tft.fillScreen(TFT_BLACK);
     lv_init();
 
-    static lv_disp_draw_buf_t draw_buf;
-    static lv_color_t buf[TFT_WIDTH * 10];
-    lv_disp_draw_buf_init(&draw_buf, buf, NULL, TFT_WIDTH * 10);
+    // Crear un buffer de dibujo
+    static lv_color_t buf[TFT_WIDTH * 10];  // Buffer para 10 líneas de la pantalla
+    lv_draw_buf_t draw_buf;
+    lv_draw_buf_init(&draw_buf, TFT_WIDTH, 10, LV_COLOR_FORMAT_NATIVE, TFT_WIDTH * sizeof(lv_color_t), buf, sizeof(buf));
 
-    static lv_disp_drv_t disp_drv;
-    lv_disp_drv_init(&disp_drv);
-    disp_drv.hor_res = TFT_WIDTH;
-    disp_drv.ver_res = TFT_HEIGHT;
-    disp_drv.flush_cb = [](lv_disp_drv_t *disp, const lv_area_t *area, lv_color_t *color_p) {
-        ((ScreenManager*)disp->user_data)->my_disp_flush(disp, area, color_p);
-    };
-    disp_drv.user_data = this;
-    disp_drv.draw_buf = &draw_buf;
-    lv_disp_drv_register(&disp_drv);
+    // Crear un display
+    lv_display_t *disp = lv_display_create(TFT_WIDTH, TFT_HEIGHT);
+
+    // Configurar los buffers del display
+    lv_display_set_buffers(disp, buf, NULL, sizeof(buf), LV_DISPLAY_RENDER_MODE_PARTIAL);
+
+    // Configurar la función de flush
+    lv_display_set_flush_cb(disp, my_disp_flush);
+
+    // Configurar el display
+    lv_display_set_driver_data(disp, this);
 }
 
-void ScreenManager::my_disp_flush(lv_disp_drv_t *disp, const lv_area_t *area, lv_color_t *color_p) {
+void ScreenManager::my_disp_flush(lv_display_t *disp, const lv_area_t *area, uint8_t *px_map) {
     uint32_t w = (area->x2 - area->x1 + 1);
     uint32_t h = (area->y2 - area->y1 + 1);
 
-    tft.startWrite();
-    tft.setAddrWindow(area->x1, area->y1, w, h);
-    tft.pushColors((uint16_t *)&color_p->full, w * h, true);
-    tft.endWrite();
+    ScreenManager* manager = (ScreenManager*)lv_display_get_driver_data(disp);
+    manager->tft.startWrite();
+    manager->tft.setAddrWindow(area->x1, area->y1, w, h);
+    manager->tft.pushColors((uint16_t *)px_map, w * h, true);
+    manager->tft.endWrite();
 
-    lv_disp_flush_ready(disp);
+    lv_display_flush_ready(disp);
 }
