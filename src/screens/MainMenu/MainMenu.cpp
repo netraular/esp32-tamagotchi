@@ -21,19 +21,22 @@ void MainMenu::updateMenu() {
 
     switch (selectedOption) {
         case 0:
-            menuText = "> FoodScreen\n  ButtonsTestScreen\n  SetupScreen\n  RestartScreen\n  ShopScreen";
+            menuText = "> FoodScreen\n  ButtonsTestScreen\n  SetupScreen\n  RestartScreen\n  ShopScreen\n  PetStatsScreen";
             break;
         case 1:
-            menuText = "  FoodScreen\n> ButtonsTestScreen\n  SetupScreen\n  RestartScreen\n  ShopScreen";
+            menuText = "  FoodScreen\n> ButtonsTestScreen\n  SetupScreen\n  RestartScreen\n  ShopScreen\n  PetStatsScreen";
             break;
         case 2:
-            menuText = "  FoodScreen\n  ButtonsTestScreen\n> SetupScreen\n  RestartScreen\n  ShopScreen";
+            menuText = "  FoodScreen\n  ButtonsTestScreen\n> SetupScreen\n  RestartScreen\n  ShopScreen\n  PetStatsScreen";
             break;
         case 3:
-            menuText = "  FoodScreen\n  ButtonsTestScreen\n  SetupScreen\n> RestartScreen\n  ShopScreen";
+            menuText = "  FoodScreen\n  ButtonsTestScreen\n  SetupScreen\n> RestartScreen\n  ShopScreen\n  PetStatsScreen";
             break;
         case 4:
-            menuText = "  FoodScreen\n  ButtonsTestScreen\n  SetupScreen\n  RestartScreen\n> ShopScreen";
+            menuText = "  FoodScreen\n  ButtonsTestScreen\n  SetupScreen\n  RestartScreen\n> ShopScreen\n  PetStatsScreen";
+            break;
+        case 5:
+            menuText = "  FoodScreen\n  ButtonsTestScreen\n  SetupScreen\n  RestartScreen\n  ShopScreen\n> PetStatsScreen";
             break;
     }
 
@@ -44,7 +47,7 @@ void MainMenu::updateMenu() {
 void MainMenu::handleButtonEvent(const ButtonState& state, const ButtonChange& change) {
     // Manejar la navegación con el botón 1
     if (change.button1Changed && state.button1Pressed) {
-        selectedOption = (selectedOption + 1) % 5; // Cambiar entre las cinco opciones
+        selectedOption = (selectedOption + 1) % 6; // Cambiar entre las seis opciones
         updateMenu();
     }
 
@@ -65,6 +68,9 @@ void MainMenu::handleButtonEvent(const ButtonState& state, const ButtonChange& c
                 break;
             case 4:
                 screenManager.setScreen("ShopScreen");
+                break;
+            case 5:
+                screenManager.setScreen("PetStatsScreen");
                 break;
         }
     }

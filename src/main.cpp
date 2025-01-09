@@ -9,6 +9,7 @@
 #include "PersistentDataManager/PersistentDataManager.h"
 #include "screens/TestScreen/TestScreen.h"
 #include "screens/ShopScreen/ShopScreen.h"
+#include "screens/PetStatsScreen/PetStatsScreen.h"
 
 // Objetos globales
 TFT_eSPI tft;
@@ -21,6 +22,7 @@ RestartScreen restartScreen;
 PersistentDataManager persistentDataManager;
 TestScreen testScreen;
 ShopScreen shopScreen;
+PetStatsScreen petStatsScreen;
 
 // Intervalo de tiempo para 30 FPS (en milisegundos)
 const uint32_t FRAME_INTERVAL = 1000 / 30;
@@ -62,6 +64,7 @@ void setup() {
     screenManager.addScreen("RestartScreen", &restartScreen);
     screenManager.addScreen("TestScreen", &testScreen);
     screenManager.addScreen("ShopScreen", &shopScreen);
+    screenManager.addScreen("PetStatsScreen", &petStatsScreen);
 
     // Inicializar LVGL y cargar la pantalla principal
     screenManager.init();
