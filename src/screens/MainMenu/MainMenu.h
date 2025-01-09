@@ -11,7 +11,7 @@ public:
 
 private:
     lv_obj_t* menuLabel;
-    int selectedOption; // 0: FoodScreen, 1: ButtonsTestScreen
+    int selectedOption; // Índice de la opción seleccionada
     void updateMenu();
 };
 
