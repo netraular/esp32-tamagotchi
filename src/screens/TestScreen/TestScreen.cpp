@@ -1,31 +1,39 @@
 #include "TestScreen.h"
 #include "../ScreenManager.h"
 
-// Declarar la variable externa de la imagen
-extern const lv_img_dsc_t n05ApplePie;
-
 extern ScreenManager screenManager;
 
 void TestScreen::load() {
-    // Crear un objeto de imagen
-    img = lv_img_create(lv_scr_act());
+    // Crear el teclado
+    keyboard = new Keyboard(lv_scr_act());
+    keyboard->show();
 
-    // Asignar la imagen desde la variable n05ApplePie
-    lv_img_set_src(img, &n05ApplePie);
-
-    // Centrar la imagen en la pantalla
-    lv_obj_align(img, LV_ALIGN_CENTER, 0, 0);
+    // Crear una etiqueta para mostrar el valor seleccionado
+    outputLabel = lv_label_create(lv_scr_act());
+    lv_label_set_text(outputLabel, "Selecciona una letra");
+    lv_obj_align(outputLabel, LV_ALIGN_TOP_MID, 0, 10);
 
     Serial.println("TestScreen cargada.");
 }
 
 void TestScreen::update() {
-    // No es necesario actualizar nada en esta pantalla
+    // Actualizar la etiqueta con la última acción del teclado
+    if (keyboard->getLastAction() == Keyboard::Action::LetterSelected) {
+        lv_label_set_text_fmt(outputLabel, "Letra seleccionada: %c", keyboard->getSelectedLetter());
+    } else if (keyboard->getLastAction() == Keyboard::Action::Exit) {
+        lv_label_set_text(outputLabel, "Saliendo del teclado...");
+    }
 }
 
 void TestScreen::handleButtonEvent(const ButtonState& state, const ButtonChange& change) {
-    // Si se presiona el botón 3, volver a la pantalla MainMenu
+    // Manejar los botones
+    if (change.button1Changed && state.button1Pressed) {
+        keyboard->handleButtonEvent(1);
+    }
+    if (change.button2Changed && state.button2Pressed) {
+        keyboard->handleButtonEvent(2);
+    }
     if (change.button3Changed && state.button3Pressed) {
-        screenManager.setScreen("MainMenu");
+        keyboard->handleButtonEvent(3);
     }
 }

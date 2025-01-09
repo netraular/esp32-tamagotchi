@@ -2,6 +2,7 @@
 #define TESTSCREEN_H
 
 #include "../Screen.h"
+#include "../../components/Keyboard/Keyboard.h"
 
 class TestScreen : public Screen {
 public:
@@ -10,7 +11,8 @@ public:
     void handleButtonEvent(const ButtonState& state, const ButtonChange& change) override;
 
 private:
-    lv_obj_t* img; // Objeto para la imagen
+    Keyboard* keyboard;
+    lv_obj_t* outputLabel;
 };
 
 #endif
