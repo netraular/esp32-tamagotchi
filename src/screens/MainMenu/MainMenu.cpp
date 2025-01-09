@@ -86,6 +86,6 @@ void MainMenu::updateMenu() {
 
     // Actualizar la etiqueta del menú
     lv_label_set_text(menuLabel, menuText);
-    lv_obj_set_style_text_font(menuLabel, &lv_font_montserrat_16, 0);
+    lv_obj_set_style_text_font(menuLabel, &lv_font_montserrat_12, 0);
     lv_obj_align(menuLabel, LV_ALIGN_CENTER, 0, 0); // Centrar el texto en la pantalla
 }
