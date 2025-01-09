@@ -10,6 +10,10 @@ extern const lv_img_dsc_t n07Bread;
 extern ScreenManager screenManager;
 extern PersistentDataManager persistentDataManager;
 
+// Variables para controlar el parpadeo
+bool isCoinsBlinking = false; // Indica si el contador de monedas está parpadeando
+unsigned long blinkStartTime = 0; // Tiempo en que comenzó el parpadeo
+
 void ShopScreen::load() {
     // Limpiar los vectores si ya contenían datos
     foodImages.clear();
@@ -25,7 +29,22 @@ void ShopScreen::load() {
 }
 
 void ShopScreen::update() {
-    // No es necesario actualizar nada en esta pantalla
+    // Actualizar el parpadeo del contador de monedas
+    if (isCoinsBlinking) {
+        unsigned long currentTime = millis();
+        if (currentTime - blinkStartTime >= 1000) {
+            // Detener el parpadeo después de 1 segundo
+            isCoinsBlinking = false;
+            lv_obj_set_style_text_color(coinsLabel, lv_color_hex(0x000000), 0); // Restaurar el color a negro
+        } else {
+            // Alternar el color entre rojo y negro cada 200 ms
+            if ((currentTime - blinkStartTime) % 400 < 200) {
+                lv_obj_set_style_text_color(coinsLabel, lv_color_hex(0xFF0000), 0); // Rojo
+            } else {
+                lv_obj_set_style_text_color(coinsLabel, lv_color_hex(0x000000), 0); // Negro
+            }
+        }
+    }
 }
 
 void ShopScreen::handleButtonEvent(const ButtonState& state, const ButtonChange& change) {
@@ -100,8 +119,15 @@ void ShopScreen::handleButtonEvent(const ButtonState& state, const ButtonChange&
                     }
 
                     Serial.println("Alimento comprado correctamente");
+
+                    // Actualizar el contador de monedas en la pantalla
+                    lv_label_set_text_fmt(coinsLabel, "Coins: %d", petStats["coins"].as<int>());
                 } else {
                     Serial.println("No tienes suficientes monedas");
+
+                    // Activar el parpadeo del contador de monedas
+                    isCoinsBlinking = true;
+                    blinkStartTime = millis();
                 }
             }
         } else {
@@ -121,7 +147,7 @@ void ShopScreen::handleButtonEvent(const ButtonState& state, const ButtonChange&
         }
     }
 
-    // Volver al menú principal con el botón 3
+    // Volver al menú principal o PetScreen con el botón 3
     if (change.button3Changed && state.button3Pressed) {
         if (inFoodMenu) {
             // Volver al menú principal de la tienda
@@ -178,7 +204,7 @@ void ShopScreen::showFoodMenu() {
     int coins = petStats["coins"]; // Obtener las monedas
 
     // Mostrar las monedas en la esquina superior derecha
-    lv_obj_t* coinsLabel = lv_label_create(lv_scr_act());
+    coinsLabel = lv_label_create(lv_scr_act());
     lv_label_set_text_fmt(coinsLabel, "Coins: %d", coins);
     lv_obj_set_style_text_font(coinsLabel, &lv_font_montserrat_12, 0);
     lv_obj_align(coinsLabel, LV_ALIGN_TOP_RIGHT, -10, 10); // Alinear en la esquina superior derecha

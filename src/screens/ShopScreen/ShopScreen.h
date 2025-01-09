@@ -16,6 +16,7 @@ private:
     int selectedOption = 0;            // Índice de la opción seleccionada (Food, Items, Clothes)
     int selectedFoodIndex = -1;        // Índice del alimento seleccionado
     bool inFoodMenu = false;           // Indica si estamos en el menú de alimentos
+    lv_obj_t* coinsLabel = nullptr;    // Etiqueta para mostrar las monedas
 
     void showMainMenu();               // Mostrar el menú principal (Food, Items, Clothes)
     void showFoodMenu();               // Mostrar la lista de alimentos
