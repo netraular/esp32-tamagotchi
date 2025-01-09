@@ -13,6 +13,7 @@ public:
 private:
     Keyboard* keyboard; // Teclado
     lv_obj_t* outputLabel; // Etiqueta para mostrar el valor seleccionado
+    bool isKeyboardActive; // Indica si el teclado está activo
 };
 
 #endif

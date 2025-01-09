@@ -46,27 +46,40 @@ void Keyboard::handleButtonEvent(int button) {
         if (button == 1) {
             // Cambiar a la siguiente fila
             selectedRowIndex = (selectedRowIndex + 1) % rows.size();
+            Serial.printf("Fila seleccionada: %d\n", selectedRowIndex);
         } else if (button == 2) {
             // Seleccionar la fila actual y entrar en el modo de selección de letras
-            selectRow();
-            Serial.printf("Fila seleccionada: %d\n", selectedRowIndex);
+            selectLetter();
+            Serial.println("Modo de selección de letra activado");
+        } else if (button == 3) {
+            // Salir del teclado
+            Serial.println("Botón 3 presionado: Saliendo del teclado");
+            if (onLetterSelectedCallback) {
+                onLetterSelectedCallback("exit"); // Notificar la salida del teclado
+            }
+            hide(); // Ocultar el teclado
         }
     } else if (currentMode == Mode::SelectLetter) {
         if (button == 1) {
             // Cambiar a la siguiente letra
             selectedLetterIndex = (selectedLetterIndex + 1) % rows[selectedRowIndex].size();
+            Serial.printf("Letra seleccionada: %c\n", rows[selectedRowIndex][selectedLetterIndex]);
         } else if (button == 2) {
             // Seleccionar la letra actual y enviarla como output
             char selectedLetter = rows[selectedRowIndex][selectedLetterIndex];
             if (selectedLetter != '\0') {
-                Serial.printf("Letra seleccionada: %c\n", selectedLetter);
-                // Notificar a la pantalla que se ha seleccionado una letra
+                Serial.printf("Letra enviada: %c\n", selectedLetter);
                 if (onLetterSelectedCallback) {
-                    onLetterSelectedCallback(selectedLetter);
+                    onLetterSelectedCallback(std::string(1, selectedLetter)); // Notificar la letra seleccionada
                 }
             }
             // Volver al modo de selección de fila
             selectRow();
+            Serial.println("Volviendo al modo de selección de fila");
+        } else if (button == 3) {
+            // Volver al modo de selección de fila
+            selectRow();
+            Serial.println("Botón 3 presionado: Volviendo al modo de selección de fila");
         }
     }
 
@@ -79,7 +92,7 @@ void Keyboard::handleButtonEvent(int button) {
     }
 }
 
-void Keyboard::setOnLetterSelectedCallback(std::function<void(char)> callback) {
+void Keyboard::setOnLetterSelectedCallback(std::function<void(std::string)> callback) {
     onLetterSelectedCallback = callback;
 }
 
@@ -186,11 +199,19 @@ void Keyboard::updateSelection() {
 }
 
 void Keyboard::selectLetter() {
-    currentMode = Mode::SelectRow; // Volver al modo de selección de filas
-    selectedLetterIndex = 0; // Reiniciar la selección de letra
+    currentMode = Mode::SelectLetter; // Cambiar al modo de selección de letras
+    selectedLetterIndex = 0; // Seleccionar la primera letra de la fila
 }
 
 void Keyboard::selectRow() {
-    currentMode = Mode::SelectLetter; // Cambiar al modo de selección de letras
-    selectedLetterIndex = 0; // Seleccionar la primera letra de la fila
+    currentMode = Mode::SelectRow; // Cambiar al modo de selección de filas
+    selectedLetterIndex = 0; // Reiniciar la selección de letra
+}
+
+bool Keyboard::isSelectingLetter() const {
+    return currentMode == Mode::SelectLetter;
+}
+
+bool Keyboard::isSelectingRow() const {
+    return currentMode == Mode::SelectRow;
 }
