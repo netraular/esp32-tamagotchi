@@ -21,19 +21,19 @@ void MainMenu::updateMenu() {
 
     switch (selectedOption) {
         case 0:
-            menuText = "> FoodScreen\n  ButtonsTestScreen\n  SetupScreen\n  RestartScreen\n  TestScreen";
+            menuText = "> FoodScreen\n  ButtonsTestScreen\n  SetupScreen\n  RestartScreen\n  ShopScreen";
             break;
         case 1:
-            menuText = "  FoodScreen\n> ButtonsTestScreen\n  SetupScreen\n  RestartScreen\n  TestScreen";
+            menuText = "  FoodScreen\n> ButtonsTestScreen\n  SetupScreen\n  RestartScreen\n  ShopScreen";
             break;
         case 2:
-            menuText = "  FoodScreen\n  ButtonsTestScreen\n> SetupScreen\n  RestartScreen\n  TestScreen";
+            menuText = "  FoodScreen\n  ButtonsTestScreen\n> SetupScreen\n  RestartScreen\n  ShopScreen";
             break;
         case 3:
-            menuText = "  FoodScreen\n  ButtonsTestScreen\n  SetupScreen\n> RestartScreen\n  TestScreen";
+            menuText = "  FoodScreen\n  ButtonsTestScreen\n  SetupScreen\n> RestartScreen\n  ShopScreen";
             break;
         case 4:
-            menuText = "  FoodScreen\n  ButtonsTestScreen\n  SetupScreen\n  RestartScreen\n> TestScreen";
+            menuText = "  FoodScreen\n  ButtonsTestScreen\n  SetupScreen\n  RestartScreen\n> ShopScreen";
             break;
     }
 
@@ -64,7 +64,7 @@ void MainMenu::handleButtonEvent(const ButtonState& state, const ButtonChange& c
                 screenManager.setScreen("RestartScreen");
                 break;
             case 4:
-                screenManager.setScreen("TestScreen");
+                screenManager.setScreen("ShopScreen");
                 break;
         }
     }

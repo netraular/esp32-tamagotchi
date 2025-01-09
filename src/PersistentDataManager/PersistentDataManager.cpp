@@ -168,7 +168,7 @@ const char* PersistentDataManager::getInitialPetStats() {
         "health": 100,
         "hunger": 100,
         "happiness": 100,
-        "coins": 0,
+        "coins": 900,
         "birthdate": "2023-01-01",
         "evolution": 0,
         "alive": true
