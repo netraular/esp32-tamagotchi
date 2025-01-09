@@ -2,6 +2,7 @@
 #define FOODSCREEN_H
 
 #include "../Screen.h"
+#include <vector>
 
 class FoodScreen : public Screen {
 public:
@@ -10,7 +11,8 @@ public:
     void handleButtonEvent(const ButtonState& state, const ButtonChange& change) override;
 
 private:
-    lv_obj_t* label;
+    std::vector<lv_obj_t*> foodImages; // Vector para almacenar las imágenes de las comidas
+    std::vector<lv_obj_t*> foodLabels; // Vector para almacenar las etiquetas de las comidas
 };
 
 #endif

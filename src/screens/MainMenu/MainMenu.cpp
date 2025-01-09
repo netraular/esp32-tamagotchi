@@ -16,10 +16,35 @@ void MainMenu::update() {
     // No es necesario actualizar nada en esta pantalla
 }
 
+void MainMenu::updateMenu() {
+    const char* menuText = "";  // Inicializar con un valor predeterminado
+
+    switch (selectedOption) {
+        case 0:
+            menuText = "> FoodScreen\n  ButtonsTestScreen\n  SetupScreen\n  RestartScreen\n  TestScreen";
+            break;
+        case 1:
+            menuText = "  FoodScreen\n> ButtonsTestScreen\n  SetupScreen\n  RestartScreen\n  TestScreen";
+            break;
+        case 2:
+            menuText = "  FoodScreen\n  ButtonsTestScreen\n> SetupScreen\n  RestartScreen\n  TestScreen";
+            break;
+        case 3:
+            menuText = "  FoodScreen\n  ButtonsTestScreen\n  SetupScreen\n> RestartScreen\n  TestScreen";
+            break;
+        case 4:
+            menuText = "  FoodScreen\n  ButtonsTestScreen\n  SetupScreen\n  RestartScreen\n> TestScreen";
+            break;
+    }
+
+    lv_label_set_text(menuLabel, menuText);
+    lv_obj_align(menuLabel, LV_ALIGN_CENTER, 0, 0); // Centrar el texto en la pantalla
+}
+
 void MainMenu::handleButtonEvent(const ButtonState& state, const ButtonChange& change) {
     // Manejar la navegación con el botón 1
     if (change.button1Changed && state.button1Pressed) {
-        selectedOption = (selectedOption + 1) % 4; // Cambiar entre las cuatro opciones
+        selectedOption = (selectedOption + 1) % 5; // Cambiar entre las cinco opciones
         updateMenu();
     }
 
@@ -38,28 +63,9 @@ void MainMenu::handleButtonEvent(const ButtonState& state, const ButtonChange& c
             case 3:
                 screenManager.setScreen("RestartScreen");
                 break;
+            case 4:
+                screenManager.setScreen("TestScreen");
+                break;
         }
     }
-}
-
-void MainMenu::updateMenu() {
-    const char* menuText = "";  // Inicializar con un valor predeterminado
-
-    switch (selectedOption) {
-        case 0:
-            menuText = "> FoodScreen\n  ButtonsTestScreen\n  SetupScreen\n  RestartScreen";
-            break;
-        case 1:
-            menuText = "  FoodScreen\n> ButtonsTestScreen\n  SetupScreen\n  RestartScreen";
-            break;
-        case 2:
-            menuText = "  FoodScreen\n  ButtonsTestScreen\n> SetupScreen\n  RestartScreen";
-            break;
-        case 3:
-            menuText = "  FoodScreen\n  ButtonsTestScreen\n  SetupScreen\n> RestartScreen";
-            break;
-    }
-
-    lv_label_set_text(menuLabel, menuText);
-    lv_obj_align(menuLabel, LV_ALIGN_CENTER, 0, 0); // Centrar el texto en la pantalla
 }
