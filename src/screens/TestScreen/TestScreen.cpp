@@ -8,6 +8,11 @@ void TestScreen::load() {
     keyboard = new Keyboard(lv_scr_act());
     keyboard->show();
 
+    // Configurar el callback para recibir la letra seleccionada
+    keyboard->setOnLetterSelectedCallback([this](char letter) {
+        lv_label_set_text_fmt(outputLabel, "Letra enviada: %c", letter);
+    });
+
     // Crear una etiqueta para mostrar el valor seleccionado
     outputLabel = lv_label_create(lv_scr_act());
     lv_label_set_text(outputLabel, "Selecciona una letra");
@@ -28,14 +33,6 @@ void TestScreen::handleButtonEvent(const ButtonState& state, const ButtonChange&
     }
     if (change.button2Changed && state.button2Pressed) {
         keyboard->handleButtonEvent(2); // Pasar el evento al teclado
-
-        // Obtener la letra seleccionada y mostrarla en la pantalla
-        char selectedLetter = keyboard->getSelectedLetter();
-        if (selectedLetter != '\0') {
-            lv_label_set_text_fmt(outputLabel, "Letra seleccionada: %c", selectedLetter);
-        } else {
-            lv_label_set_text(outputLabel, "Selecciona una letra");
-        }
     }
     if (change.button3Changed && state.button3Pressed) {
         keyboard->handleButtonEvent(3); // Pasar el evento al teclado

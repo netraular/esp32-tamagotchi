@@ -56,9 +56,17 @@ void Keyboard::handleButtonEvent(int button) {
             // Cambiar a la siguiente letra
             selectedLetterIndex = (selectedLetterIndex + 1) % rows[selectedRowIndex].size();
         } else if (button == 2) {
-            // Seleccionar la letra actual
-            selectLetter();
-            Serial.printf("Letra seleccionada: %c\n", rows[selectedRowIndex][selectedLetterIndex]);
+            // Seleccionar la letra actual y enviarla como output
+            char selectedLetter = rows[selectedRowIndex][selectedLetterIndex];
+            if (selectedLetter != '\0') {
+                Serial.printf("Letra seleccionada: %c\n", selectedLetter);
+                // Notificar a la pantalla que se ha seleccionado una letra
+                if (onLetterSelectedCallback) {
+                    onLetterSelectedCallback(selectedLetter);
+                }
+            }
+            // Volver al modo de selección de fila
+            selectRow();
         }
     }
 
@@ -69,6 +77,10 @@ void Keyboard::handleButtonEvent(int button) {
     if (currentMode == Mode::SelectRow) {
         lv_obj_scroll_to_view(rowContainers[selectedRowIndex], LV_ANIM_ON);
     }
+}
+
+void Keyboard::setOnLetterSelectedCallback(std::function<void(char)> callback) {
+    onLetterSelectedCallback = callback;
 }
 
 char Keyboard::getSelectedLetter() const {
@@ -164,14 +176,21 @@ void Keyboard::updateSelection() {
                 lv_obj_set_style_text_color(label, lv_color_hex(0x000000), 0);
             }
         }
+    } else if (currentMode == Mode::SelectRow) {
+        // Restaurar el color de todas las letras de la fila seleccionada al volver al modo de selección de fila
+        for (int j = 0; j < letterButtons[selectedRowIndex].size(); j++) {
+            lv_obj_t* label = lv_obj_get_child(letterButtons[selectedRowIndex][j], 0); // Obtener la etiqueta del botón
+            lv_obj_set_style_text_color(label, lv_color_hex(0x000000), 0); // Color negro
+        }
     }
+}
+
+void Keyboard::selectLetter() {
+    currentMode = Mode::SelectRow; // Volver al modo de selección de filas
+    selectedLetterIndex = 0; // Reiniciar la selección de letra
 }
 
 void Keyboard::selectRow() {
     currentMode = Mode::SelectLetter; // Cambiar al modo de selección de letras
     selectedLetterIndex = 0; // Seleccionar la primera letra de la fila
-}
-
-void Keyboard::selectLetter() {
-    currentMode = Mode::SelectRow; // Volver al modo de selección de filas
 }

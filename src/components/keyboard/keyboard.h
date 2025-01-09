@@ -3,6 +3,7 @@
 
 #include <lvgl.h>
 #include <vector>
+#include <functional> // Para usar std::function
 
 class Keyboard {
 public:
@@ -18,6 +19,9 @@ public:
     void handleButtonEvent(int button);
     char getSelectedLetter() const; // Obtener la letra seleccionada
 
+    // Callback para notificar la selección de una letra
+    void setOnLetterSelectedCallback(std::function<void(char)> callback);
+
 private:
     lv_obj_t* keyboardContainer; // Contenedor del teclado
     std::vector<std::vector<char>> rows; // Filas de letras
@@ -26,6 +30,7 @@ private:
     int selectedRowIndex; // Índice de la fila seleccionada
     int selectedLetterIndex; // Índice de la letra seleccionada
     Mode currentMode; // Modo actual (selección de filas o letras)
+    std::function<void(char)> onLetterSelectedCallback; // Callback para notificar la selección de una letra
 
     void createKeyboard();
     void updateSelection();
