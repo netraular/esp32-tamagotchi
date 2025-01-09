@@ -11,6 +11,15 @@
 #include "screens/ShopScreen/ShopScreen.h"
 #include "screens/PetStatsScreen/PetStatsScreen.h"
 #include "screens/PetScreen/PetScreen.h"
+#include "screens/SettingsScreen/SettingsScreen.h"
+#include "screens/SettingsScreen/NicknameScreen/NicknameScreen.h"
+#include "screens/SettingsScreen/DateTimeScreen/DateTimeScreen.h"
+#include "screens/SettingsScreen/SleepTimeScreen/SleepTimeScreen.h"
+#include "screens/SettingsScreen/FavoriteAchievementScreen/FavoriteAchievementScreen.h"
+#include "screens/SettingsScreen/FavoriteItemScreen/FavoriteItemScreen.h"
+#include "screens/SettingsScreen/FavoriteFoodScreen/FavoriteFoodScreen.h"
+#include "screens/SettingsScreen/WifiScreen/WifiScreen.h"
+#include "screens/SettingsScreen/LanguageScreen/LanguageScreen.h"
 
 // Objetos globales
 TFT_eSPI tft;
@@ -25,6 +34,15 @@ TestScreen testScreen;
 ShopScreen shopScreen;
 PetStatsScreen petStatsScreen;
 PetScreen petScreen;
+SettingsScreen settingsScreen;
+NicknameScreen nicknameScreen;
+DateTimeScreen dateTimeScreen;
+SleepTimeScreen sleepTimeScreen;
+FavoriteAchievementScreen favoriteAchievementScreen;
+FavoriteItemScreen favoriteItemScreen;
+FavoriteFoodScreen favoriteFoodScreen;
+WifiScreen wifiScreen;
+LanguageScreen languageScreen;
 
 // Intervalo de tiempo para 30 FPS (en milisegundos)
 const uint32_t FRAME_INTERVAL = 1000 / 30;
@@ -68,6 +86,15 @@ void setup() {
     screenManager.addScreen("ShopScreen", &shopScreen);
     screenManager.addScreen("PetStatsScreen", &petStatsScreen);
     screenManager.addScreen("PetScreen", &petScreen);
+    screenManager.addScreen("SettingsScreen", &settingsScreen);
+    screenManager.addScreen("NicknameScreen", &nicknameScreen);
+    screenManager.addScreen("DateTimeScreen", &dateTimeScreen);
+    screenManager.addScreen("SleepTimeScreen", &sleepTimeScreen);
+    screenManager.addScreen("FavoriteAchievementScreen", &favoriteAchievementScreen);
+    screenManager.addScreen("FavoriteItemScreen", &favoriteItemScreen);
+    screenManager.addScreen("FavoriteFoodScreen", &favoriteFoodScreen);
+    screenManager.addScreen("WifiScreen", &wifiScreen);
+    screenManager.addScreen("LanguageScreen", &languageScreen);
 
     // Inicializar LVGL y cargar la pantalla principal
     screenManager.init();
