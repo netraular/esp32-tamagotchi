@@ -120,13 +120,13 @@ void FoodScreen::handleButtonEvent(const ButtonState& state, const ButtonChange&
             return;
         }
 
-        // Volver al MainMenu
-        screenManager.setScreen("MainMenu");
+        // Volver a PetScreen
+        screenManager.setScreen("PetScreen");
     }
 
-    // Volver al menú principal con el botón 3
+    // Volver al PetScreen con el botón 3
     if (change.button3Changed && state.button3Pressed) {
-        screenManager.setScreen("MainMenu");
+        screenManager.setScreen("PetScreen");
     }
 }
 

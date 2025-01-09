@@ -128,8 +128,8 @@ void ShopScreen::handleButtonEvent(const ButtonState& state, const ButtonChange&
             inFoodMenu = false;
             showMainMenu();
         } else {
-            // Volver al MainMenu
-            screenManager.setScreen("MainMenu");
+            // Volver a PetScreen
+            screenManager.setScreen("PetScreen");
         }
     }
 }

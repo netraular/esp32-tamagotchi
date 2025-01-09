@@ -74,4 +74,9 @@ void MainMenu::handleButtonEvent(const ButtonState& state, const ButtonChange& c
                 break;
         }
     }
+
+    // Si se presiona el botón 3, ir a PetScreen
+    if (change.button3Changed && state.button3Pressed) {
+        screenManager.setScreen("PetScreen");
+    }
 }

@@ -94,8 +94,8 @@ void ButtonsTestScreen::update() {
         unsigned long elapsedTime = currentTime - countdownStartTime;
 
         if (elapsedTime >= COMBO_HOLD_TIME) {
-            // Si han pasado 3 segundos, regresar al menú
-            screenManager.setScreen("MainMenu");
+            // Si han pasado 3 segundos, regresar a PetScreen
+            screenManager.setScreen("PetScreen");
             isCountingDown = false; // Detener el contador
             lv_obj_add_flag(countdownLabel, LV_OBJ_FLAG_HIDDEN); // Ocultar el contador
         } else {

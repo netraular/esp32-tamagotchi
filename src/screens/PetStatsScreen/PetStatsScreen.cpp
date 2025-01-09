@@ -59,8 +59,8 @@ void PetStatsScreen::update() {
 }
 
 void PetStatsScreen::handleButtonEvent(const ButtonState& state, const ButtonChange& change) {
-    // Volver al menú principal con el botón 3
+    // Volver a PetScreenl con el botón 3
     if (change.button3Changed && state.button3Pressed) {
-        screenManager.setScreen("MainMenu");
+        screenManager.setScreen("PetScreen");
     }
 }

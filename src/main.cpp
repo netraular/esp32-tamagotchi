@@ -10,6 +10,7 @@
 #include "screens/TestScreen/TestScreen.h"
 #include "screens/ShopScreen/ShopScreen.h"
 #include "screens/PetStatsScreen/PetStatsScreen.h"
+#include "screens/PetScreen/PetScreen.h"
 
 // Objetos globales
 TFT_eSPI tft;
@@ -23,6 +24,7 @@ PersistentDataManager persistentDataManager;
 TestScreen testScreen;
 ShopScreen shopScreen;
 PetStatsScreen petStatsScreen;
+PetScreen petScreen;
 
 // Intervalo de tiempo para 30 FPS (en milisegundos)
 const uint32_t FRAME_INTERVAL = 1000 / 30;
@@ -65,10 +67,11 @@ void setup() {
     screenManager.addScreen("TestScreen", &testScreen);
     screenManager.addScreen("ShopScreen", &shopScreen);
     screenManager.addScreen("PetStatsScreen", &petStatsScreen);
+    screenManager.addScreen("PetScreen", &petScreen);
 
     // Inicializar LVGL y cargar la pantalla principal
     screenManager.init();
-    screenManager.setScreen("MainMenu"); // Cargar MainMenu al inicio
+    screenManager.setScreen("PetScreen"); // Cargar PetScreen al inicio
 
     Serial.println("Setup completado.");
 }

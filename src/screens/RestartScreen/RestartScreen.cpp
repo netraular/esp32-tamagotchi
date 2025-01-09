@@ -19,8 +19,8 @@ void RestartScreen::update() {
 }
 
 void RestartScreen::handleButtonEvent(const ButtonState& state, const ButtonChange& change) {
-    // Si se presiona el botón 3, volver a la pantalla MainMenu
+    // Si se presiona el botón 3, volver a la pantalla PetScreen
     if (change.button3Changed && state.button3Pressed) {
-        screenManager.setScreen("MainMenu");
+        screenManager.setScreen("PetScreen");
     }
 }
