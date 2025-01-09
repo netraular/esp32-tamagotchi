@@ -33,30 +33,23 @@ bool PersistentDataManager::format() {
 }
 
 bool PersistentDataManager::createInitialFiles() {
+    // Crear food.json si no existe
     if (!LittleFS.exists("/data/food.json")) {
-        const char* initialFoodData = R"(
-        [
-            {"id":1,"name":"Apple Pie","hunger":100,"health":5,"happiness":2,"quantity":5,"price":5,"image":"/assets/food/n05ApplePie.c"},
-            {"id":2,"name":"Bread","hunger":20,"health":10,"happiness":5,"quantity":5,"price":15,"image":"/assets/food/n07Bread.c"}
-        ])";
-        if (!createFile("/data/food.json", initialFoodData)) {
+        if (!resetFoodData()) {
             return false;
         }
     }
 
+    // Crear own_food.json si no existe
+    if (!LittleFS.exists("/data/own_food.json")) {
+        if (!resetOwnFoodData()) {
+            return false;
+        }
+    }
+
+    // Crear pet_stats.json si no existe
     if (!LittleFS.exists("/data/pet_stats.json")) {
-        const char* initialPetStats = R"(
-        {
-            "name": "TestName",
-            "health": 100,
-            "hunger": 100,
-            "happiness": 100,
-            "coins": 0,
-            "birthdate": "2023-01-01",
-            "evolution": 0,
-            "alive": true
-        })";
-        if (!createFile("/data/pet_stats.json", initialPetStats)) {
+        if (!resetPetStats()) {
             return false;
         }
     }
@@ -65,26 +58,17 @@ bool PersistentDataManager::createInitialFiles() {
 }
 
 bool PersistentDataManager::resetFoodData() {
-    const char* initialFoodData = R"(
-    [
-        {"id":1,"name":"Apple Pie","hunger":100,"health":5,"happiness":2,"quantity":5,"price":5,"image":"/assets/food/n05ApplePie.c"},
-        {"id":2,"name":"Bread","hunger":20,"health":10,"happiness":5,"quantity":5,"price":15,"image":"/assets/food/n07Bread.c"}
-    ])";
+    const char* initialFoodData = getInitialFoodData();
     return createFile("/data/food.json", initialFoodData);
 }
 
+bool PersistentDataManager::resetOwnFoodData() {
+    const char* initialOwnFoodData = getInitialOwnFoodData();
+    return createFile("/data/own_food.json", initialOwnFoodData);
+}
+
 bool PersistentDataManager::resetPetStats() {
-    const char* initialPetStats = R"(
-    {
-        "name": "TestName",
-        "health": 100,
-        "hunger": 100,
-        "happiness": 100,
-        "coins": 0,
-        "birthdate": "2023-01-01",
-        "evolution": 0,
-        "alive": true
-    })";
+    const char* initialPetStats = getInitialPetStats();
     return createFile("/data/pet_stats.json", initialPetStats);
 }
 
@@ -154,4 +138,40 @@ bool PersistentDataManager::createDirectory(const char* path) {
         Serial.printf("Error al crear el directorio: %s\n", path);
         return false;
     }
+}
+
+// Función privada para obtener el JSON inicial de food.json
+const char* PersistentDataManager::getInitialFoodData() {
+    static const char* initialFoodData = R"(
+    [
+        {"id":1,"name":"Apple Pie","hunger":100,"health":5,"happiness":2,"price":5,"image":"/assets/food/n05ApplePie.c"},
+        {"id":2,"name":"Bread","hunger":20,"health":10,"happiness":5,"price":15,"image":"/assets/food/n07Bread.c"}
+    ])";
+    return initialFoodData;
+}
+
+// Función privada para obtener el JSON inicial de own_food.json
+const char* PersistentDataManager::getInitialOwnFoodData() {
+    static const char* initialOwnFoodData = R"(
+    [
+        {"id":1,"quantity":5},
+        {"id":2,"quantity":5}
+    ])";
+    return initialOwnFoodData;
+}
+
+// Función privada para obtener el JSON inicial de pet_stats.json
+const char* PersistentDataManager::getInitialPetStats() {
+    static const char* initialPetStats = R"(
+    {
+        "name": "TestName",
+        "health": 100,
+        "hunger": 100,
+        "happiness": 100,
+        "coins": 0,
+        "birthdate": "2023-01-01",
+        "evolution": 0,
+        "alive": true
+    })";
+    return initialPetStats;
 }

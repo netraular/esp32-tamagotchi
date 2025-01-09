@@ -13,6 +13,8 @@ public:
 private:
     std::vector<lv_obj_t*> foodImages; // Vector para almacenar las imágenes de las comidas
     std::vector<lv_obj_t*> foodLabels; // Vector para almacenar las etiquetas de las comidas
+    int selectedFoodIndex = 0;         // Índice de la comida seleccionada
+    void updateSelection();            // Función para actualizar la selección visual
 };
 
 #endif

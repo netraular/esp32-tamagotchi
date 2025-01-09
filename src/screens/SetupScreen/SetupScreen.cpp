@@ -28,7 +28,7 @@ void SetupScreen::handleButtonEvent(const ButtonState& state, const ButtonChange
 
     // Si se presiona el botón 1, resetear los archivos JSON
     if (change.button1Changed && state.button1Pressed) {
-        if (persistentDataManager.resetFoodData() && persistentDataManager.resetPetStats()) {
+        if (persistentDataManager.resetFoodData() && persistentDataManager.resetOwnFoodData() && persistentDataManager.resetPetStats()) {
             Serial.println("Archivos JSON reseteados correctamente");
         } else {
             Serial.println("Error al resetear los archivos JSON");
