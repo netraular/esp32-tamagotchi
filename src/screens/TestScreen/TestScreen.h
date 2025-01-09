@@ -11,8 +11,8 @@ public:
     void handleButtonEvent(const ButtonState& state, const ButtonChange& change) override;
 
 private:
-    Keyboard* keyboard;
-    lv_obj_t* outputLabel;
+    Keyboard* keyboard; // Teclado
+    lv_obj_t* outputLabel; // Etiqueta para mostrar el valor seleccionado
 };
 
 #endif
