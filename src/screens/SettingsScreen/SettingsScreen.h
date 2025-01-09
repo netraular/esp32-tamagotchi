@@ -1,7 +1,7 @@
 #ifndef SETTINGSSCREEN_H
 #define SETTINGSSCREEN_H
 
-#include "../../Screen.h"
+#include "../Screen.h"
 #include <vector>
 
 class SettingsScreen : public Screen {

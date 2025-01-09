@@ -2,6 +2,7 @@
 #define LANGUAGESCREEN_H
 
 #include "../../Screen.h"
+#include <vector> // Incluir la biblioteca vector
 
 class LanguageScreen : public Screen {
 public:

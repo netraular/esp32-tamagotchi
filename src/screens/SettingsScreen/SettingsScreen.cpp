@@ -1,5 +1,5 @@
 #include "SettingsScreen.h"
-#include "../../ScreenManager.h"
+#include "../ScreenManager.h"
 
 extern ScreenManager screenManager;
 
