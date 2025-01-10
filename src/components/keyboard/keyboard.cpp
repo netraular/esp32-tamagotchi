@@ -110,7 +110,7 @@ void Keyboard::handleButtonEvent(int button) {
                 visibleRowStart = selectedRowIndex;
                 updateVisibleRows();
             }
-            Serial.printf("Fila seleccionada: %d\n", selectedRowIndex);
+            Serial.printf("Fila marcada: %d\n", selectedRowIndex);
         } else if (button == 2) {
             // Seleccionar la fila actual y entrar en el modo de selección de letras
             selectLetter();
@@ -127,7 +127,7 @@ void Keyboard::handleButtonEvent(int button) {
         if (button == 1) {
             // Cambiar a la siguiente letra
             selectedLetterIndex = (selectedLetterIndex + 1) % rows[selectedRowIndex].size();
-            Serial.printf("Letra seleccionada: %c\n", rows[selectedRowIndex][selectedLetterIndex]);
+            Serial.printf("Letra marcada: %c\n", rows[selectedRowIndex][selectedLetterIndex]);
         } else if (button == 2) {
             // Seleccionar la letra actual y enviarla como output
             char selectedLetter = rows[selectedRowIndex][selectedLetterIndex];
@@ -150,7 +150,7 @@ void Keyboard::handleButtonEvent(int button) {
     // Actualizar la selección visual
     updateSelection();
 
-    // Mover el scroll para que la fila seleccionada esté visible
+    // Mover el scroll para que la fila marcada esté visible
     if (currentMode == Mode::SelectRow) {
         lv_obj_scroll_to_view(rowContainers[selectedRowIndex - visibleRowStart], LV_ANIM_ON);
     }

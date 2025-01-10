@@ -15,7 +15,7 @@ void TestScreen::load() {
             Serial.println("Callback: Saliendo del teclado");
             isKeyboardActive = false;
         } else {
-            Serial.printf("Callback: Letra enviada: %s\n", value.c_str());
+            Serial.printf("Callback: Letra recibida: %s\n", value.c_str());
             int nextPosition = inputText->insertChar(value[0]); // Insertar la letra en la casilla seleccionada
             // Si hemos introducido la última letra, devuelve -1 y ocultamos el teclado
             if (nextPosition == -1) {
@@ -55,16 +55,13 @@ void TestScreen::handleButtonEvent(const ButtonState& state, const ButtonChange&
     if (isKeyboardActive) {
         // Si el teclado está activo, pasar los eventos al teclado
         if (change.button1Changed && state.button1Pressed) {
-            Serial.println("Botón 1 presionado: Pasando evento al teclado");
-            keyboard->handleButtonEvent(1); // Pasar el evento al teclado
+            keyboard->handleButtonEvent(1);
         }
         if (change.button2Changed && state.button2Pressed) {
-            Serial.println("Botón 2 presionado: Pasando evento al teclado");
-            keyboard->handleButtonEvent(2); // Pasar el evento al teclado
+            keyboard->handleButtonEvent(2);
         }
         if (change.button3Changed && state.button3Pressed) {
-            Serial.println("Botón 3 presionado: Pasando evento al teclado");
-            keyboard->handleButtonEvent(3); // Pasar el evento al teclado
+            keyboard->handleButtonEvent(3);
         }
     } else {
         int currentIndex = inputText->getSelectedBoxIndex();
