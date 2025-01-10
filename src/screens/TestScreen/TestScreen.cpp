@@ -14,7 +14,7 @@ void TestScreen::load() {
         if (value == "exit") {
             Serial.println("Callback: Saliendo del teclado");
             isKeyboardActive = false;
-            lv_label_set_text(outputLabel, "Press 1 to start");
+            lv_label_set_text(outputLabel, "Nombre");
         } else {
             Serial.printf("Callback: Letra enviada: %s\n", value.c_str());
             inputText->insertChar(value[0]); // Insertar la letra en la casilla seleccionada
@@ -23,12 +23,12 @@ void TestScreen::load() {
 
     // Crear una etiqueta para mostrar el valor seleccionado
     outputLabel = lv_label_create(lv_scr_act());
-    lv_label_set_text(outputLabel, "Press 1 to start");
+    lv_label_set_text(outputLabel, "Nombre");
     lv_obj_set_style_text_font(outputLabel, &lv_font_montserrat_12, 0); // Usar fuente 12
     lv_obj_align(outputLabel, LV_ALIGN_TOP_MID, 0, 10); // Alinear en la parte superior
 
     // Crear el componente InputText
-    inputText = new InputText(lv_scr_act(), 6); // 13 caracteres máximos
+    inputText = new InputText(lv_scr_act(), 6); // 6 caracteres máximos
     inputText->show(); // Mostrar el InputText
     lv_obj_align(inputText->getContainer(), LV_ALIGN_CENTER, 0, -20); // Alinear en el centro, justo debajo del outputLabel
 
@@ -57,19 +57,25 @@ void TestScreen::handleButtonEvent(const ButtonState& state, const ButtonChange&
     } else {
         // Si el teclado no está activo, manejar los botones
         if (change.button1Changed && state.button1Pressed) {
-            // Avanzar al siguiente índice
-            std::string result = inputText->moveNext();
-            if (result == "End") {
-                Serial.println("Se alcanzó el final del InputText.");
-                Serial.print("Nombre: ");
-                Serial.println(inputText->getText());
+            int currentIndex = inputText->getSelectedBoxIndex();
+
+            if (currentIndex != -1) {
+                // Si hay una casilla seleccionada, avanzar al siguiente índice
+                inputText->moveNext();
             } else {
-                Serial.printf("Casilla seleccionada: %s\n", result.c_str());
+                // Si no hay ninguna casilla seleccionada, mostrar el texto ingresado
+                const char* text = inputText->getText();
+                Serial.printf("Texto ingresado: %s\n", text);
+                char buffer[50]; // Asegúrate de que el tamaño del buffer sea suficiente
+                snprintf(buffer, sizeof(buffer), "Nombre: %s", text);
+                lv_label_set_text(outputLabel, buffer);
             }
         }
         if (change.button2Changed && state.button2Pressed) {
+            int currentIndex = inputText->getSelectedBoxIndex();
+
             // Mostrar el teclado para editar la casilla seleccionada
-            if (inputText->isAnyBoxSelected()) {
+            if (currentIndex != -1 and currentIndex != 0) {
                 Serial.println("Botón 2 presionado: Activando el teclado");
                 isKeyboardActive = true;
                 keyboard->show();
@@ -79,18 +85,15 @@ void TestScreen::handleButtonEvent(const ButtonState& state, const ButtonChange&
             }
         }
         if (change.button3Changed && state.button3Pressed) {
-            // Retroceder al índice anterior
-            std::string result = inputText->movePrevious();
-            if (result == "Start") {
-                if (!inputText->isAnyBoxSelected()) {
-                    // Si no hay ninguna casilla seleccionada, volver al menú principal
-                    Serial.println("Botón 3 presionado: Volviendo al menú principal");
-                    screenManager.setScreen("MainMenu");
-                } else {
-                    Serial.println("Se alcanzó el inicio del InputText.");
-                }
+            int currentIndex = inputText->getSelectedBoxIndex();
+
+            if (currentIndex != 0) {
+                // Si la posición del selector no es 0, retroceder al índice anterior
+                inputText->movePrevious();
             } else {
-                Serial.printf("Casilla seleccionada: %s\n", result.c_str());
+                // Si la posición del selector es 0, volver al menú principal
+                Serial.println("Botón 3 presionado: Volviendo al menú principal");
+                screenManager.setScreen("MainMenu");
             }
         }
     }
