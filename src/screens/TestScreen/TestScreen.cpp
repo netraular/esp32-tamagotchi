@@ -55,15 +55,22 @@ void TestScreen::handleButtonEvent(const ButtonState& state, const ButtonChange&
             keyboard->handleButtonEvent(3); // Pasar el evento al teclado
         }
     } else {
+        int currentIndex = inputText->getSelectedBoxIndex();
+        Serial.println(currentIndex);
         // Si el teclado no está activo, manejar los botones
         if (change.button1Changed && state.button1Pressed) {
-            int currentIndex = inputText->getSelectedBoxIndex();
-
+            bool showName = false; // Variable para controlar si se debe mostrar el nombre
             if (currentIndex != -1) {
                 // Si hay una casilla seleccionada, avanzar al siguiente índice
-                inputText->moveNext();
+                if (inputText->moveNext() == -1) {
+                    showName = true; // Mostrar el nombre si moveNext devuelve -1
+                }
             } else {
                 // Si no hay ninguna casilla seleccionada, mostrar el texto ingresado
+                showName = true;
+            }
+            // Mostrar el texto ingresado si showName es true
+            if (showName) {
                 const char* text = inputText->getText();
                 Serial.printf("Texto ingresado: %s\n", text);
                 char buffer[50]; // Asegúrate de que el tamaño del buffer sea suficiente
@@ -72,8 +79,6 @@ void TestScreen::handleButtonEvent(const ButtonState& state, const ButtonChange&
             }
         }
         if (change.button2Changed && state.button2Pressed) {
-            int currentIndex = inputText->getSelectedBoxIndex();
-
             // Mostrar el teclado para editar la casilla seleccionada
             if (currentIndex != -1 and currentIndex != 0) {
                 Serial.println("Botón 2 presionado: Activando el teclado");
@@ -85,8 +90,6 @@ void TestScreen::handleButtonEvent(const ButtonState& state, const ButtonChange&
             }
         }
         if (change.button3Changed && state.button3Pressed) {
-            int currentIndex = inputText->getSelectedBoxIndex();
-
             if (currentIndex != 0) {
                 // Si la posición del selector no es 0, retroceder al índice anterior
                 inputText->movePrevious();

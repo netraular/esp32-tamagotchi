@@ -94,7 +94,7 @@ void InputText::insertChar(char c) {
         textBuffer[selectedBoxIndex - 1] = c;
         updateBoxes();
 
-        // Mover el selector a la siguiente casilla
+        // Mover el selector a la siguiente casilla con un carácter
         moveNext();
     }
 }
@@ -104,25 +104,58 @@ int InputText::getSelectedBoxIndex() const {
 }
 
 int InputText::moveNext() {
-    if (selectedBoxIndex < maxLength) {
-        setSelectedBox(selectedBoxIndex + 1);
-        // Desplazar el contenedor para que la casilla seleccionada esté visible
-        lv_obj_scroll_to_view(boxes[selectedBoxIndex - 1], LV_ANIM_ON);
-    } else {
-        setSelectedBox(-1); // Si se llega al final, deseleccionar
+    if (selectedBoxIndex == 0){
+        setSelectedBox(1);
+    }else if(selectedBoxIndex > 0 && selectedBoxIndex <= maxLength){
+         if (textBuffer[selectedBoxIndex - 1] == '\0') {
+            setSelectedBox(-1);
+        } else {
+            // Mover a la siguiente casilla
+            setSelectedBox(selectedBoxIndex + 1);
+        }
+    } else if (selectedBoxIndex == -1) {
+        //Estamos fuera del selector.
     }
+
+    // Desplazar el contenedor para que la casilla seleccionada esté visible
+    if (selectedBoxIndex > 0 && selectedBoxIndex <= maxLength) {
+        lv_obj_scroll_to_view(boxes[selectedBoxIndex - 1], LV_ANIM_ON);
+    }
+
     updateSelection();
     return selectedBoxIndex;
 }
 
 int InputText::movePrevious() {
-    if (selectedBoxIndex > 1) {
+    if (selectedBoxIndex == 0){
+        //Estamos fuera del selector.
+    }else if(selectedBoxIndex > 0 && selectedBoxIndex <= maxLength){
+        // Mover a la casilla anterior
         setSelectedBox(selectedBoxIndex - 1);
-        // Desplazar el contenedor para que la casilla seleccionada esté visible
-        lv_obj_scroll_to_view(boxes[selectedBoxIndex - 1], LV_ANIM_ON);
-    } else {
-        setSelectedBox(0); // Si se llega al inicio, deseleccionar
+    } else if (selectedBoxIndex == -1) {
+        //Vamos a la última posición con un carácter introducido
+
+        // Buscar la última casilla con un carácter introducido
+        int lastFilledIndex = -1;
+        for (int i = maxLength - 1; i >= 0; i--) {
+            if (textBuffer[i] != '\0') {
+                lastFilledIndex = i + 1; // +1 porque selectedBoxIndex es 1-based
+                break;
+            }
+        }
+        // Si no hay ningún carácter, seleccionar la primera casilla
+        if (lastFilledIndex == -1) {
+            selectedBoxIndex = 1;
+        } else {
+            selectedBoxIndex = lastFilledIndex;
+        }
     }
+
+    // Desplazar el contenedor para que la casilla seleccionada esté visible
+    if (selectedBoxIndex > 0 && selectedBoxIndex <= maxLength) {
+        lv_obj_scroll_to_view(boxes[selectedBoxIndex - 1], LV_ANIM_ON);
+    }
+
     updateSelection();
     return selectedBoxIndex;
 }
