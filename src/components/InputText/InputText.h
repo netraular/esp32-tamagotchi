@@ -17,7 +17,7 @@ public:
     int getMaxLength() const;
     lv_obj_t* getContainer() const;
     void setSelectedBox(int index); // Seleccionar una casilla
-    void insertChar(char c);       // Insertar un carácter en la casilla seleccionada
+    int insertChar(char c);       // Insertar un carácter en la casilla seleccionada
     int getSelectedBoxIndex() const; // Obtener el índice de la casilla seleccionada
     int moveNext();        // Avanzar al siguiente índice
     int movePrevious();    // Retroceder al índice anterior

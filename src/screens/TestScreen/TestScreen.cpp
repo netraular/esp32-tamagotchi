@@ -14,10 +14,22 @@ void TestScreen::load() {
         if (value == "exit") {
             Serial.println("Callback: Saliendo del teclado");
             isKeyboardActive = false;
-            lv_label_set_text(outputLabel, "Nombre");
         } else {
             Serial.printf("Callback: Letra enviada: %s\n", value.c_str());
-            inputText->insertChar(value[0]); // Insertar la letra en la casilla seleccionada
+            int nextPosition = inputText->insertChar(value[0]); // Insertar la letra en la casilla seleccionada
+            // Si hemos introducido la última letra, devuelve -1 y ocultamos el teclado
+            if (nextPosition == -1) {
+                Serial.println("Ocultando el teclado porque no hay más casillas disponibles");
+                isKeyboardActive = false;
+                keyboard->hide();
+                
+                // Mostrar el texto ingresado
+                const char* text = inputText->getText();
+                Serial.printf("Texto ingresado: %s\n", text);
+                char buffer[50]; // Asegúrate de que el tamaño del buffer sea suficiente
+                snprintf(buffer, sizeof(buffer), "Nombre: %s", text);
+                lv_label_set_text(outputLabel, buffer);
+            }
         }
     });
 
@@ -28,7 +40,7 @@ void TestScreen::load() {
     lv_obj_align(outputLabel, LV_ALIGN_TOP_MID, 0, 10); // Alinear en la parte superior
 
     // Crear el componente InputText
-    inputText = new InputText(lv_scr_act(), 63); // 6 caracteres máximos
+    inputText = new InputText(lv_scr_act(), 6); // 6 caracteres máximos
     inputText->show(); // Mostrar el InputText
     lv_obj_align(inputText->getContainer(), LV_ALIGN_CENTER, 0, -20); // Alinear en el centro, justo debajo del outputLabel
 
@@ -56,7 +68,6 @@ void TestScreen::handleButtonEvent(const ButtonState& state, const ButtonChange&
         }
     } else {
         int currentIndex = inputText->getSelectedBoxIndex();
-        Serial.println(currentIndex);
         // Si el teclado no está activo, manejar los botones
         if (change.button1Changed && state.button1Pressed) {
             bool showName = false; // Variable para controlar si se debe mostrar el nombre
@@ -84,9 +95,8 @@ void TestScreen::handleButtonEvent(const ButtonState& state, const ButtonChange&
                 Serial.println("Botón 2 presionado: Activando el teclado");
                 isKeyboardActive = true;
                 keyboard->show();
-                lv_label_set_text(outputLabel, "Selecciona una letra");
             } else {
-                Serial.println("Ninguna casilla seleccionada. Presiona el botón 1 para empezar.");
+                Serial.println("Ninguna casilla seleccionada. Selecciona una casilla para usar el teclado.");
             }
         }
         if (change.button3Changed && state.button3Pressed) {

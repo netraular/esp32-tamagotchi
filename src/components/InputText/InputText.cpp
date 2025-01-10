@@ -88,15 +88,16 @@ void InputText::setSelectedBox(int index) {
     }
 }
 
-void InputText::insertChar(char c) {
+int InputText::insertChar(char c) {
     if (selectedBoxIndex > 0 && selectedBoxIndex <= maxLength) {
         // Insertar el carácter en la casilla seleccionada
         textBuffer[selectedBoxIndex - 1] = c;
         updateBoxes();
 
         // Mover el selector a la siguiente casilla con un carácter
-        moveNext();
+        return moveNext();
     }
+    return selectedBoxIndex;
 }
 
 int InputText::getSelectedBoxIndex() const {
