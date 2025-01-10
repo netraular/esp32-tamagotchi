@@ -37,14 +37,11 @@ void InputText::createBoxes(lv_obj_t* parent) {
     const int boxWidth = 18; // Ancho fijo de cada casilla
     const int boxHeight = 20; // Altura fija de cada casilla
 
-    // Calcular el espacio total ocupado por las casillas
-    int totalWidth = maxLength * boxWidth;
-    int startX = ((126 - totalWidth) / 2)+10; // Centrar las casillas horizontalmente
 
     for (int i = 0; i < maxLength; i++) {
         lv_obj_t* box = lv_obj_create(parent);
         lv_obj_set_size(box, boxWidth, boxHeight); // Tamaño fijo de 18x20 píxeles
-        lv_obj_set_pos(box, startX + i * boxWidth, ((35 - boxHeight)  / 2) - 1); // Centrar verticalmente
+        lv_obj_set_pos(box, 5 + i * boxWidth, ((35 - boxHeight)  / 2) - 1); // Centrar verticalmente
         lv_obj_set_style_border_width(box, 1, 0); // Borde de 1 píxel
         lv_obj_set_style_border_color(box, lv_color_hex(0x000000), 0); // Borde negro
         lv_obj_set_style_pad_all(box, 0, 0); // Sin padding

@@ -6,7 +6,7 @@ extern ScreenManager screenManager;
 void TestScreen::load() {
     // Crear el teclado
     keyboard = new Keyboard(lv_scr_act());
-    keyboard->hide(); // Ocultar el teclado inicialmente
+    keyboard->hide(); // Ocultar el teclado inicialmente 
     isKeyboardActive = false; // El teclado no está activo inicialmente
 
     // Configurar el callback para recibir la letra seleccionada o la salida del teclado
@@ -27,10 +27,10 @@ void TestScreen::load() {
     lv_obj_set_style_text_font(outputLabel, &lv_font_montserrat_12, 0); // Usar fuente 12
     lv_obj_align(outputLabel, LV_ALIGN_TOP_MID, 0, 10); // Alinear en la parte superior
 
-    // Crear el componente InputText con 8 casillas
-    inputText = new InputText(lv_scr_act(), 8); // 8 casillas
-    inputText->show(); // Mostrar el InputText
-    lv_obj_align(inputText->getContainer(), LV_ALIGN_CENTER, 0, -20); // Alinear en el centro, justo debajo del outputLabel
+    // Crear el componente InputText
+    // inputText = new InputText(lv_scr_act(), 6);
+    // inputText->show(); // Mostrar el InputText
+    // lv_obj_align(inputText->getContainer(), LV_ALIGN_CENTER, 0, -20); // Alinear en el centro, justo debajo del outputLabel
 
     Serial.println("TestScreen cargada.");
 }
