@@ -12,7 +12,6 @@ void TestScreen::load() {
     // Configurar el callback para recibir la letra seleccionada o la salida del teclado
     keyboard->setOnLetterSelectedCallback([this](std::string value) {
         if (value == "exit") {
-            Serial.println("Callback: Saliendo del teclado");
             isKeyboardActive = false;
         } else {
             Serial.printf("Callback: Letra recibida: %s\n", value.c_str());
