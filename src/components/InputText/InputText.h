@@ -15,7 +15,6 @@ public:
     const char* getText() const;
     void setMaxLength(int maxLength);
     int getMaxLength() const;
-    void setPlaceholder(const char* placeholder);
     lv_obj_t* getContainer() const;
     void setSelectedBox(int index); // Seleccionar una casilla
     void insertChar(char c);       // Insertar un carácter en la casilla seleccionada

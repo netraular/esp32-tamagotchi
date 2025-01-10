@@ -112,7 +112,7 @@ std::string InputText::moveNext() {
     if (selectedBoxIndex == maxLength - 1) {
         // Si ya está en la última casilla, deseleccionar todas
         clearSelection();
-        return "null";
+        return "End"; // Devolver "End" para indicar que se alcanzó el final
     }
     if (selectedBoxIndex == -1) {
         // Si no hay ninguna casilla seleccionada, seleccionar la primera
@@ -127,7 +127,7 @@ std::string InputText::movePrevious() {
     if (selectedBoxIndex == 0) {
         // Si ya está en la primera casilla, deseleccionar todas
         clearSelection();
-        return "null";
+        return "Start"; // Devolver "Start" para indicar que se alcanzó el inicio
     }
     if (selectedBoxIndex == -1) {
         // Si no hay ninguna casilla seleccionada, seleccionar la última
@@ -190,9 +190,6 @@ int InputText::getMaxLength() const {
     return maxLength;
 }
 
-void InputText::setPlaceholder(const char* placeholder) {
-    // Implementar lógica para mostrar un placeholder si es necesario
-}
 
 lv_obj_t* InputText::getContainer() const {
     return container; // Devolver el contenedor

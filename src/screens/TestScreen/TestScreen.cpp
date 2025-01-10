@@ -59,7 +59,7 @@ void TestScreen::handleButtonEvent(const ButtonState& state, const ButtonChange&
         if (change.button1Changed && state.button1Pressed) {
             // Avanzar al siguiente índice
             std::string result = inputText->moveNext();
-            if (result == "null") {
+            if (result == "End") {
                 Serial.println("Se alcanzó el final del InputText.");
                 Serial.print("Nombre: ");
                 Serial.println(inputText->getText());
@@ -81,7 +81,7 @@ void TestScreen::handleButtonEvent(const ButtonState& state, const ButtonChange&
         if (change.button3Changed && state.button3Pressed) {
             // Retroceder al índice anterior
             std::string result = inputText->movePrevious();
-            if (result == "null") {
+            if (result == "Start") {
                 if (!inputText->isAnyBoxSelected()) {
                     // Si no hay ninguna casilla seleccionada, volver al menú principal
                     Serial.println("Botón 3 presionado: Volviendo al menú principal");
