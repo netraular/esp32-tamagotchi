@@ -1,7 +1,12 @@
 #include "PersistentDataManager.h"
 
+PersistentDataManager& PersistentDataManager::getInstance() {
+    static PersistentDataManager instance; // Instancia única (Singleton)
+    return instance;
+}
+
 PersistentDataManager::PersistentDataManager() {
-    // Constructor
+    // Constructor privado
 }
 
 bool PersistentDataManager::init() {

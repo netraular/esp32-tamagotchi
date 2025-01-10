@@ -6,6 +6,7 @@
 
 class PersistentDataManager {
 public:
+    static PersistentDataManager& getInstance(); // Método Singleton
     PersistentDataManager();
     bool init(); // Inicializar LittleFS
     bool format(); // Formatear LittleFS
