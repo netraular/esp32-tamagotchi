@@ -3,6 +3,7 @@
 
 #include "../Screen.h"
 #include "../../components/Keyboard/Keyboard.h"
+#include "../../components/InputText/InputText.h"
 
 class TestScreen : public Screen {
 public:
@@ -12,6 +13,7 @@ public:
 
 private:
     Keyboard* keyboard; // Teclado
+    InputText* inputText; // Componente InputText
     lv_obj_t* outputLabel; // Etiqueta para mostrar el valor seleccionado
     bool isKeyboardActive; // Indica si el teclado está activo
 };

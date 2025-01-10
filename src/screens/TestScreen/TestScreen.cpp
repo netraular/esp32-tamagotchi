@@ -14,7 +14,7 @@ void TestScreen::load() {
         if (value == "exit") {
             Serial.println("Callback: Saliendo del teclado");
             isKeyboardActive = false;
-            lv_label_set_text(outputLabel, "Pulsa el botón 1 para usar el teclado");
+            lv_label_set_text(outputLabel, "Press 1 to start");
         } else {
             Serial.printf("Callback: Letra enviada: %s\n", value.c_str());
             lv_label_set_text_fmt(outputLabel, "Letra enviada: %s", value.c_str());
@@ -23,9 +23,14 @@ void TestScreen::load() {
 
     // Crear una etiqueta para mostrar el valor seleccionado
     outputLabel = lv_label_create(lv_scr_act());
-    lv_label_set_text(outputLabel, "Pulsa el botón 1 para usar el teclado");
+    lv_label_set_text(outputLabel, "Press 1 to start");
     lv_obj_set_style_text_font(outputLabel, &lv_font_montserrat_12, 0); // Usar fuente 12
     lv_obj_align(outputLabel, LV_ALIGN_TOP_MID, 0, 10); // Alinear en la parte superior
+
+    // Crear el componente InputText con 8 casillas
+    inputText = new InputText(lv_scr_act(), 8); // 8 casillas
+    inputText->show(); // Mostrar el InputText
+    lv_obj_align(inputText->getContainer(), LV_ALIGN_CENTER, 0, -20); // Alinear en el centro, justo debajo del outputLabel
 
     Serial.println("TestScreen cargada.");
 }
