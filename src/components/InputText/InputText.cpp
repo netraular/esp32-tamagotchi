@@ -65,7 +65,7 @@ void InputText::updateBoxes() {
     for (int i = 0; i < maxLength; i++) {
         lv_obj_t* box = boxes[i];
         lv_obj_t* label = lv_obj_get_child(box, 0);
-        if (i < strlen(textBuffer)) {
+        if (textBuffer[i] != '\0') {
             lv_label_set_text_fmt(label, "%c", textBuffer[i]); // Mostrar el carácter
         } else {
             lv_label_set_text(label, ""); // Casilla vacía
@@ -96,8 +96,9 @@ void InputText::setSelectedBox(int index) {
 void InputText::insertChar(char c) {
     if (selectedBoxIndex > 0 && selectedBoxIndex <= maxLength) {
         // Insertar el carácter en la casilla seleccionada
-        textBuffer[selectedBoxIndex-1] = c;
+        textBuffer[selectedBoxIndex - 1] = c;
         updateBoxes();
+
         // Mover el selector a la siguiente casilla
         moveNext();
     }
@@ -161,7 +162,34 @@ void InputText::setText(const char* text) {
 }
 
 const char* InputText::getText() const {
-    return textBuffer;
+    static char result[50]; // Asegúrate de que el tamaño del buffer sea suficiente
+    int resultIndex = 0;
+    bool foundNonEmpty = false;
+
+    // Ignorar elementos vacíos al inicio
+    for (int i = 0; i < maxLength; i++) {
+        if (textBuffer[i] != '\0') {
+            foundNonEmpty = true;
+        }
+        if (foundNonEmpty) {
+            result[resultIndex++] = textBuffer[i];
+        }
+    }
+
+    // Eliminar elementos vacíos al final
+    while (resultIndex > 0 && result[resultIndex - 1] == '\0') {
+        resultIndex--;
+    }
+
+    // Reemplazar elementos vacíos intermedios por espacios en blanco
+    for (int i = 0; i < resultIndex; i++) {
+        if (result[i] == '\0') {
+            result[i] = ' ';
+        }
+    }
+
+    result[resultIndex] = '\0'; // Asegurar que el resultado esté terminado con un carácter nulo
+    return result;
 }
 
 void InputText::setMaxLength(int maxLength) {
