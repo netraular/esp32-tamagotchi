@@ -2,26 +2,19 @@
 #include <cstring>
 
 InputText::InputText(lv_obj_t* parent, int maxLength) 
-    : maxLength(maxLength), selectedBoxIndex(0) { // Inicializar selectedBoxIndex en 0
+    : maxLength(maxLength), selectedBoxIndex(0) {
     // Crear el contenedor de las casillas de texto
     container = lv_obj_create(parent);
-    lv_obj_set_size(container, 126, 36);
+    lv_obj_set_size(container, 126, 36); // Ajusta el tamaño según sea necesario
     lv_obj_set_style_pad_all(container, 0, 0); // Sin padding general
     lv_obj_set_style_border_width(container, 1, 0); // Borde de 1 píxel
     lv_obj_set_style_border_color(container, lv_color_hex(0x000000), 0); // Borde negro
     lv_obj_set_style_bg_color(container, lv_color_hex(0xFFFFFF), 0); // Fondo blanco
     lv_obj_set_style_bg_opa(container, LV_OPA_COVER, 0); // Fondo opaco
 
-    // Estilizar la scrollbar para que sea más delgada
-    static lv_style_t style_scrollbar;
-    lv_style_init(&style_scrollbar);
-    lv_style_set_width(&style_scrollbar, 2);
-    lv_style_set_bg_opa(&style_scrollbar, LV_OPA_70); // Opacidad del fondo
-    lv_style_set_bg_color(&style_scrollbar, lv_color_hex(0x808080)); // Color gris
-    lv_style_set_radius(&style_scrollbar, 1); // Radio de las esquinas
-
-    // Aplicar el estilo a la scrollbar
-    lv_obj_add_style(container, &style_scrollbar, LV_PART_SCROLLBAR);
+    // Habilitar el scroll horizontal
+    lv_obj_set_scroll_dir(container, LV_DIR_HOR);
+    lv_obj_set_scroll_snap_x(container, LV_SCROLL_SNAP_CENTER); // Centrar la casilla seleccionada
 
     // Crear el buffer para almacenar el texto
     textBuffer = new char[maxLength + 1];
@@ -76,20 +69,22 @@ void InputText::updateBoxes() {
 void InputText::setSelectedBox(int index) {
     // Restaurar el borde de la casilla previamente seleccionada
     if (selectedBoxIndex > 0 && selectedBoxIndex <= maxLength) {
-        lv_obj_set_style_border_color(boxes[selectedBoxIndex-1], lv_color_hex(0x000000), 0);
+        lv_obj_set_style_border_color(boxes[selectedBoxIndex - 1], lv_color_hex(0x000000), 0);
     }
-    
-    if (index == 0 || index == -1 || (index > 0 and index <= maxLength)){
+
+    if (index == 0 || index == -1 || (index > 0 && index <= maxLength)) {
         selectedBoxIndex = index;
-    }else if(index > maxLength){
+    } else if (index > maxLength) {
         selectedBoxIndex = -1;
-    }else{
+    } else {
         selectedBoxIndex = 0;
     }
 
     // Cambiar el borde de la casilla seleccionada a rojo
     if (selectedBoxIndex > 0 && selectedBoxIndex <= maxLength) {
-        lv_obj_set_style_border_color(boxes[selectedBoxIndex-1], lv_color_hex(0xFF0000), 0);
+        lv_obj_set_style_border_color(boxes[selectedBoxIndex - 1], lv_color_hex(0xFF0000), 0);
+        // Desplazar el contenedor para que la casilla seleccionada esté visible
+        lv_obj_scroll_to_view(boxes[selectedBoxIndex - 1], LV_ANIM_ON);
     }
 }
 
@@ -109,25 +104,27 @@ int InputText::getSelectedBoxIndex() const {
 }
 
 int InputText::moveNext() {
-    // Avanzar al siguiente índice
     if (selectedBoxIndex < maxLength) {
         setSelectedBox(selectedBoxIndex + 1);
-    }else{
-        setSelectedBox(-1);
+        // Desplazar el contenedor para que la casilla seleccionada esté visible
+        lv_obj_scroll_to_view(boxes[selectedBoxIndex - 1], LV_ANIM_ON);
+    } else {
+        setSelectedBox(-1); // Si se llega al final, deseleccionar
     }
     updateSelection();
-    return selectedBoxIndex; // Devolver el índice actual
+    return selectedBoxIndex;
 }
 
 int InputText::movePrevious() {
-    // Retroceder al índice anterior
-    if (selectedBoxIndex == -1) {
-        setSelectedBox(maxLength);
-    }else if(selectedBoxIndex>0){
+    if (selectedBoxIndex > 1) {
         setSelectedBox(selectedBoxIndex - 1);
+        // Desplazar el contenedor para que la casilla seleccionada esté visible
+        lv_obj_scroll_to_view(boxes[selectedBoxIndex - 1], LV_ANIM_ON);
+    } else {
+        setSelectedBox(0); // Si se llega al inicio, deseleccionar
     }
-    updateSelection() ;
-    return selectedBoxIndex; // Devolver el índice actual
+    updateSelection();
+    return selectedBoxIndex;
 }
 
 void InputText::clearSelection() {

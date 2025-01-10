@@ -28,7 +28,7 @@ void TestScreen::load() {
     lv_obj_align(outputLabel, LV_ALIGN_TOP_MID, 0, 10); // Alinear en la parte superior
 
     // Crear el componente InputText
-    inputText = new InputText(lv_scr_act(), 6); // 6 caracteres máximos
+    inputText = new InputText(lv_scr_act(), 63); // 6 caracteres máximos
     inputText->show(); // Mostrar el InputText
     lv_obj_align(inputText->getContainer(), LV_ALIGN_CENTER, 0, -20); // Alinear en el centro, justo debajo del outputLabel
 
