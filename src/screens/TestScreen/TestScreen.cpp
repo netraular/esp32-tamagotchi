@@ -17,7 +17,7 @@ void TestScreen::load() {
             lv_label_set_text(outputLabel, "Press 1 to start");
         } else {
             Serial.printf("Callback: Letra enviada: %s\n", value.c_str());
-            lv_label_set_text_fmt(outputLabel, "Letra enviada: %s", value.c_str());
+            inputText->insertChar(value[0]); // Insertar la letra en la casilla seleccionada
         }
     });
 
@@ -28,9 +28,9 @@ void TestScreen::load() {
     lv_obj_align(outputLabel, LV_ALIGN_TOP_MID, 0, 10); // Alinear en la parte superior
 
     // Crear el componente InputText
-    // inputText = new InputText(lv_scr_act(), 6);
-    // inputText->show(); // Mostrar el InputText
-    // lv_obj_align(inputText->getContainer(), LV_ALIGN_CENTER, 0, -20); // Alinear en el centro, justo debajo del outputLabel
+    inputText = new InputText(lv_scr_act(), 6); // 13 caracteres máximos
+    inputText->show(); // Mostrar el InputText
+    lv_obj_align(inputText->getContainer(), LV_ALIGN_CENTER, 0, -20); // Alinear en el centro, justo debajo del outputLabel
 
     Serial.println("TestScreen cargada.");
 }
@@ -55,15 +55,28 @@ void TestScreen::handleButtonEvent(const ButtonState& state, const ButtonChange&
             keyboard->handleButtonEvent(3); // Pasar el evento al teclado
         }
     } else {
-        // Si el teclado no está activo, manejar el botón 1 para activarlo
+        // Si el teclado no está activo, manejar los botones
         if (change.button1Changed && state.button1Pressed) {
-            Serial.println("Botón 1 presionado: Activando el teclado");
+            // Mover el selector a la siguiente casilla
+            int nextIndex = (inputText->getSelectedBoxIndex() + 1) % inputText->getMaxLength();
+            inputText->setSelectedBox(nextIndex);
+
+            // Verificar si se alcanzó la última casilla
+            if (nextIndex == inputText->getMaxLength() - 1) {
+                // Mostrar el nombre en el monitor serial
+                Serial.print("Nombre: ");
+                Serial.println(inputText->getText());
+            }
+        }
+        if (change.button2Changed && state.button2Pressed) {
+            // Mostrar el teclado
+            Serial.println("Botón 2 presionado: Activando el teclado");
             isKeyboardActive = true;
             keyboard->show();
             lv_label_set_text(outputLabel, "Selecciona una letra");
         }
-        // Si el teclado no está activo y se pulsa el botón 3, volver al menú principal
         if (change.button3Changed && state.button3Pressed) {
+            // Volver al menú principal
             Serial.println("Botón 3 presionado: Volviendo al menú principal");
             screenManager.setScreen("MainMenu");
         }

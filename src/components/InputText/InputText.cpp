@@ -1,7 +1,7 @@
 #include "InputText.h"
 #include <cstring>
 
-InputText::InputText(lv_obj_t* parent, int maxLength) : maxLength(maxLength) {
+InputText::InputText(lv_obj_t* parent, int maxLength) : maxLength(maxLength), selectedBoxIndex(0) {
     // Crear el contenedor de las casillas de texto
     container = lv_obj_create(parent);
     lv_obj_set_size(container, 126, 36);
@@ -37,7 +37,6 @@ void InputText::createBoxes(lv_obj_t* parent) {
     const int boxWidth = 18; // Ancho fijo de cada casilla
     const int boxHeight = 20; // Altura fija de cada casilla
 
-
     for (int i = 0; i < maxLength; i++) {
         lv_obj_t* box = lv_obj_create(parent);
         lv_obj_set_size(box, boxWidth, boxHeight); // Tamaño fijo de 18x20 píxeles
@@ -59,6 +58,9 @@ void InputText::createBoxes(lv_obj_t* parent) {
 
         boxes.push_back(box);
     }
+
+    // Seleccionar la primera casilla por defecto
+    setSelectedBox(0);
 }
 
 void InputText::updateBoxes() {
@@ -71,6 +73,39 @@ void InputText::updateBoxes() {
             lv_label_set_text(label, ""); // Casilla vacía
         }
     }
+}
+
+void InputText::setSelectedBox(int index) {
+    if (index < 0 || index >= maxLength) return;
+
+    // Restaurar el borde de la casilla previamente seleccionada
+    if (selectedBoxIndex >= 0 && selectedBoxIndex < maxLength) {
+        lv_obj_set_style_border_color(boxes[selectedBoxIndex], lv_color_hex(0x000000), 0);
+    }
+
+    // Actualizar el índice de la casilla seleccionada
+    selectedBoxIndex = index;
+
+    // Cambiar el borde de la casilla seleccionada a rojo
+    lv_obj_set_style_border_color(boxes[selectedBoxIndex], lv_color_hex(0xFF0000), 0);
+}
+
+void InputText::insertChar(char c) {
+    if (selectedBoxIndex < maxLength) {
+        // Insertar el carácter en la casilla seleccionada
+        textBuffer[selectedBoxIndex] = c;
+        updateBoxes();
+
+        // Mover el selector a la siguiente casilla
+        if (selectedBoxIndex < maxLength - 1) {
+            setSelectedBox(selectedBoxIndex + 1);
+        }
+    }
+}
+
+void InputText::updateSelection() {
+    // Cambiar el borde de la casilla seleccionada a rojo
+    lv_obj_set_style_border_color(boxes[selectedBoxIndex], lv_color_hex(0xFF0000), 0);
 }
 
 void InputText::show() {
@@ -113,4 +148,7 @@ void InputText::setPlaceholder(const char* placeholder) {
 
 lv_obj_t* InputText::getContainer() const {
     return container; // Devolver el contenedor
+}
+int InputText::getSelectedBoxIndex() const {
+    return selectedBoxIndex; // Devolver el índice de la casilla seleccionada
 }
