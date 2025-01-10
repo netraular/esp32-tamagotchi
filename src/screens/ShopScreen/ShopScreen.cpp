@@ -22,6 +22,11 @@ void ShopScreen::load() {
     selectedFoodIndex = -1; // Ningún alimento seleccionado
     inFoodMenu = false; // Empezar en el menú principal
 
+    // Crear un estilo específico para coinsLabel
+    static lv_style_t coinsLabelStyle;
+    lv_style_init(&coinsLabelStyle);
+    lv_style_set_text_color(&coinsLabelStyle, lv_color_hex(0x000000)); // Color negro por defecto
+
     // Mostrar el menú principal
     showMainMenu();
 
@@ -106,7 +111,7 @@ void ShopScreen::handleButtonEvent(const ButtonState& state, const ButtonChange&
 
                     // Si el alimento no existe, añadirlo
                     if (!foodFound) {
-                        JsonObject newFood = ownFoodData.as<JsonArray>().add<JsonObject>(); // Usar add<JsonObject>() en lugar de createNestedObject()
+                        JsonObject newFood = ownFoodData.as<JsonArray>().add<JsonObject>();
                         newFood["id"] = selectedFood["id"];
                         newFood["quantity"] = 1;
                     }
@@ -153,6 +158,12 @@ void ShopScreen::handleButtonEvent(const ButtonState& state, const ButtonChange&
             // Volver al menú principal de la tienda
             inFoodMenu = false;
             showMainMenu();
+
+            // Restablecer el color del coinsLabel si está parpadeando
+            if (isCoinsBlinking) {
+                isCoinsBlinking = false;
+                lv_obj_set_style_text_color(coinsLabel, lv_color_hex(0x000000), 0); // Restaurar el color a negro
+            }
         } else {
             // Volver a PetScreen
             screenManager.setScreen("PetScreen");
