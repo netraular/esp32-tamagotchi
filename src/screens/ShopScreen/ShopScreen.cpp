@@ -59,6 +59,7 @@ void ShopScreen::handleButtonEvent(const ButtonState& state, const ButtonChange&
             // Navegar entre los alimentos
             if (foodLabels.size() > 0) {
                 selectedFoodIndex = (selectedFoodIndex + 1) % foodLabels.size();
+                Serial.printf("Navegando en el menú Food. Índice seleccionado: %d\n", selectedFoodIndex);
                 updateSelection();
             }
         } else {
@@ -74,11 +75,10 @@ void ShopScreen::handleButtonEvent(const ButtonState& state, const ButtonChange&
             // Comprar el alimento seleccionado
             if (selectedFoodIndex >= 0 && selectedFoodIndex < foodLabels.size()) {
                 // Cargar los datos de food.json y pet_stats.json
-                JsonDocument foodData = persistentDataManager.loadData("/data/food.json");
                 JsonDocument petStats = persistentDataManager.loadData("/data/pet_stats.json");
 
-                if (foodData.isNull() || petStats.isNull()) {
-                    Serial.println("Error al cargar los archivos JSON");
+                if (petStats.isNull()) {
+                    Serial.println("Error al cargar pet_stats.json");
                     return;
                 }
 
@@ -140,7 +140,10 @@ void ShopScreen::handleButtonEvent(const ButtonState& state, const ButtonChange&
             switch (selectedOption) {
                 case 0: // Food
                     inFoodMenu = true;
-                    showFoodMenu();
+                    showFoodMenu(); // Mostrar el menú de alimentos
+                    selectedFoodIndex = 0; // Seleccionar el primer alimento
+                    Serial.printf("Entrando al menú Food. Índice seleccionado: %d\n", selectedFoodIndex);
+                    updateSelection(); // Resaltar la selección en rojo
                     break;
                 case 1: // Items
                     // No hacer nada (aún no implementado)
@@ -158,6 +161,10 @@ void ShopScreen::handleButtonEvent(const ButtonState& state, const ButtonChange&
             // Volver al menú principal de la tienda
             inFoodMenu = false;
             showMainMenu();
+
+            // Limpiar los vectores de alimentos
+            foodLabels.clear();
+            foodImages.clear();
 
             // Restablecer el color del coinsLabel si está parpadeando
             if (isCoinsBlinking) {
@@ -198,11 +205,13 @@ void ShopScreen::showFoodMenu() {
     // Limpiar la pantalla
     lv_obj_clean(lv_scr_act());
 
-    // Cargar datos desde food.json
-    JsonDocument foodData = persistentDataManager.loadData("/data/food.json");
+    // Cargar datos desde food.json solo si no están cargados
     if (foodData.isNull()) {
-        Serial.println("Error al cargar food.json");
-        return;
+        foodData = persistentDataManager.loadData("/data/food.json");
+        if (foodData.isNull()) {
+            Serial.println("Error al cargar food.json");
+            return;
+        }
     }
 
     // Cargar las monedas desde pet_stats.json
@@ -219,6 +228,10 @@ void ShopScreen::showFoodMenu() {
     lv_label_set_text_fmt(coinsLabel, "Coins: %d", coins);
     lv_obj_set_style_text_font(coinsLabel, &lv_font_montserrat_12, 0);
     lv_obj_align(coinsLabel, LV_ALIGN_TOP_RIGHT, -10, 10); // Alinear en la esquina superior derecha
+
+    // Limpiar los vectores antes de añadir nuevos elementos
+    foodLabels.clear();
+    foodImages.clear();
 
     // Mostrar los datos de los alimentos en la pantalla
     int yOffset = 40; // Posición vertical inicial (dejamos espacio para las monedas)
@@ -251,8 +264,11 @@ void ShopScreen::showFoodMenu() {
 
     // Seleccionar el primer alimento si hay alimentos disponibles
     if (foodLabels.size() > 0) {
-        selectedFoodIndex = 0;
-        updateSelection();
+        selectedFoodIndex = 0; // Seleccionar el primer alimento
+        Serial.printf("Menú Food cargado. Número de alimentos: %d. Índice seleccionado: %d\n", foodLabels.size(), selectedFoodIndex);
+        updateSelection(); // Resaltar la selección en rojo
+    } else {
+        Serial.println("Menú Food cargado. No hay alimentos disponibles.");
     }
 }
 
@@ -262,6 +278,7 @@ void ShopScreen::updateSelection() {
         for (size_t i = 0; i < foodLabels.size(); i++) {
             if (i == selectedFoodIndex) {
                 lv_obj_set_style_text_color(foodLabels[i], lv_color_hex(0xFF0000), 0); // Resaltar en rojo
+                Serial.printf("Alimento resaltado en rojo: Índice %d\n", i);
             } else {
                 lv_obj_set_style_text_color(foodLabels[i], lv_color_hex(0x000000), 0); // Color normal
             }

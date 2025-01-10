@@ -3,6 +3,7 @@
 
 #include "../Screen.h"
 #include <vector>
+#include <ArduinoJson.h> // Incluir la biblioteca ArduinoJson
 
 class ShopScreen : public Screen {
 public:
@@ -17,6 +18,8 @@ private:
     int selectedFoodIndex = -1;        // Índice del alimento seleccionado
     bool inFoodMenu = false;           // Indica si estamos en el menú de alimentos
     lv_obj_t* coinsLabel = nullptr;    // Etiqueta para mostrar las monedas
+
+    JsonDocument foodData;             // Variable para almacenar los datos de los alimentos
 
     void showMainMenu();               // Mostrar el menú principal (Food, Items, Clothes)
     void showFoodMenu();               // Mostrar la lista de alimentos
