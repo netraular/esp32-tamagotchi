@@ -1,5 +1,7 @@
 #include <Arduino.h>
 #include "config.h"
+#include <esp_sntp.h>
+#include <time.h>
 #include "screens/ScreenManager.h"
 #include "screens/ButtonsTestScreen/ButtonsTestScreen.h"
 #include "screens/FoodScreen/FoodScreen.h"
@@ -20,6 +22,7 @@
 #include "screens/SettingsScreen/FavoriteFoodScreen/FavoriteFoodScreen.h"
 #include "screens/SettingsScreen/WifiScreen/WifiScreen.h"
 #include "screens/SettingsScreen/LanguageScreen/LanguageScreen.h"
+#include "screens/LoadScreen/LoadScreen.h"
 
 // Objetos globales
 TFT_eSPI tft;
@@ -43,14 +46,24 @@ FavoriteItemScreen favoriteItemScreen;
 FavoriteFoodScreen favoriteFoodScreen;
 WifiScreen wifiScreen;
 LanguageScreen languageScreen;
+LoadScreen loadScreen;
 
 // Intervalo de tiempo para 30 FPS (en milisegundos)
 const uint32_t FRAME_INTERVAL = 1000 / 30;
+
+void setupTime() {
+    configTime(0, 0, "pool.ntp.org", "time.nist.gov"); // Configurar servidores NTP
+    setenv("TZ", "CET-1CEST,M3.5.0,M10.5.0/3", 1);     // Configurar la zona horaria (ejemplo para Europa Central)
+    tzset();
+}
 
 void setup() {
     Serial.begin(115200);
     Serial.println("Inicializando el sistema...");
 
+    // Configurar la hora
+    setupTime();
+    
     // Inicializar LittleFS y crear archivos iniciales
     if (!persistentDataManager.init()) {
         Serial.println("Error al inicializar LittleFS. Intentando formatear...");
@@ -77,6 +90,7 @@ void setup() {
     pinMode(BUTTON3_PIN, INPUT_PULLUP); // Usar resistencia pull-up interna
 
     // Registrar pantallas en ScreenManager
+    screenManager.addScreen("LoadScreen", &loadScreen); // Registrar LoadScreen
     screenManager.addScreen("ButtonsTestScreen", &buttonsTestScreen);
     screenManager.addScreen("FoodScreen", &foodScreen);
     screenManager.addScreen("MainMenu", &mainMenu);
@@ -98,7 +112,7 @@ void setup() {
 
     // Inicializar LVGL y cargar la pantalla principal
     screenManager.init();
-    screenManager.setScreen("PetScreen"); // Cargar PetScreen al inicio
+    screenManager.setScreen("LoadScreen"); // Cargar PetScreen al inicio
 
     Serial.println("Setup completado.");
 }

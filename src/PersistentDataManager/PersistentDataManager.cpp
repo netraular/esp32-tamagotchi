@@ -33,6 +33,15 @@ bool PersistentDataManager::format() {
 }
 
 bool PersistentDataManager::createInitialFiles() {
+    // Crear settings.json si no existe
+    if (!LittleFS.exists("/data/settings.json")) {
+        const char* initialSettings = R"({"default_time": "12:00:00"})";
+        if (!createFile("/data/settings.json", initialSettings)) {
+            Serial.println("Error al crear settings.json");
+            return false;
+        }
+    }
+
     // Crear food.json si no existe
     if (!LittleFS.exists("/data/food.json")) {
         if (!resetFoodData()) {
@@ -138,6 +147,61 @@ bool PersistentDataManager::createDirectory(const char* path) {
         Serial.printf("Error al crear el directorio: %s\n", path);
         return false;
     }
+}
+
+bool PersistentDataManager::saveDefaultTime(const char* time) {
+    // Cargar el archivo settings.json
+    File file = LittleFS.open("/data/settings.json", "r");
+    if (!file) {
+        Serial.println("Error al abrir settings.json para lectura");
+        return false;
+    }
+
+    // Parsear el JSON
+    JsonDocument doc;
+    DeserializationError error = deserializeJson(doc, file);
+    file.close();
+
+    if (error) {
+        Serial.println("Error al parsear settings.json");
+        return false;
+    }
+
+    // Actualizar la hora por defecto
+    doc["default_time"] = time;
+
+    // Guardar el JSON actualizado
+    file = LittleFS.open("/data/settings.json", "w");
+    if (!file) {
+        Serial.println("Error al abrir settings.json para escritura");
+        return false;
+    }
+
+    serializeJson(doc, file);
+    file.close();
+    return true;
+}
+
+const char* PersistentDataManager::loadDefaultTime() {
+    // Cargar el archivo settings.json
+    File file = LittleFS.open("/data/settings.json", "r");
+    if (!file) {
+        Serial.println("Error al abrir settings.json para lectura");
+        return nullptr;
+    }
+
+    // Parsear el JSON
+    JsonDocument doc;
+    DeserializationError error = deserializeJson(doc, file);
+    file.close();
+
+    if (error) {
+        Serial.println("Error al parsear settings.json");
+        return nullptr;
+    }
+
+    // Devolver la hora por defecto
+    return doc["default_time"];
 }
 
 // Función privada para obtener el JSON inicial de food.json
