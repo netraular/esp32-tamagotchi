@@ -1,5 +1,5 @@
 #include "ClockManager.h"
-#include "../PersistentDataManager/PersistentDataManager.h" // Incluir el archivo de cabecera
+#include "../PersistentDataManager/PersistentDataManager.h"
 
 ClockManager& ClockManager::getInstance() {
     static ClockManager instance; // Instancia única (Singleton)
@@ -10,9 +10,14 @@ ClockManager::ClockManager() {
     timeInitialized = false;
     ntpAttempted = false;
     ntpStartTime = 0;
+    clockStarted = false; // Nueva variable para controlar si el reloj ya se ha iniciado
 }
 
 void ClockManager::begin() {
+    if (clockStarted) {
+        return; // Si el reloj ya se ha iniciado, no hacer nada
+    }
+
     // Cargar la hora por defecto desde settings.json (si es necesario)
     const char* defaultTime = PersistentDataManager::getInstance().loadDefaultTime();
     if (defaultTime) {
@@ -31,6 +36,7 @@ void ClockManager::begin() {
 
     // Configurar el servidor NTP
     setupTime();
+    clockStarted = true; // Marcar que el reloj se ha iniciado
 }
 
 void ClockManager::update() {

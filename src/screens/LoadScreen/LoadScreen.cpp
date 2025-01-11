@@ -1,7 +1,7 @@
 #include "LoadScreen.h"
 #include "../ScreenManager.h"
 #include "../../ClockManager/ClockManager.h"
-#include "../../PersistentDataManager/PersistentDataManager.h" // Incluir el archivo de cabecera
+#include "../../PersistentDataManager/PersistentDataManager.h"
 
 extern ScreenManager screenManager;
 
@@ -18,7 +18,7 @@ void LoadScreen::load() {
     lv_obj_set_style_text_font(clockLabel, &lv_font_montserrat_24, 0);
     lv_obj_align(clockLabel, LV_ALIGN_CENTER, 0, 20); // Centrar el reloj en la pantalla
 
-    // Inicializar el reloj
+    // Inicializar el reloj solo si no se ha inicializado antes
     ClockManager::getInstance().begin();
 
     Serial.println("LoadScreen cargada.");
@@ -33,7 +33,6 @@ void LoadScreen::update() {
 
     // Actualizar la etiqueta del reloj
     lv_label_set_text(clockLabel, timeString);
-
 }
 
 void LoadScreen::handleButtonEvent(const ButtonState& state, const ButtonChange& change) {

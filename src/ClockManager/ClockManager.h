@@ -22,6 +22,7 @@ private:
     bool timeInitialized; // Indica si la hora se ha inicializado correctamente
     bool ntpAttempted; // Indica si ya se intentó obtener la hora por NTP
     unsigned long ntpStartTime; // Tiempo en que se inició el intento de NTP
+    bool clockStarted; // Indica si el reloj ya se ha iniciado
 };
 
 #endif
