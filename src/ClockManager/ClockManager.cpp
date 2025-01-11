@@ -1,5 +1,7 @@
 #include "ClockManager.h"
-#include "../PersistentDataManager/PersistentDataManager.h"
+#include "../PersistentDataManager/PersistentDataManager.h" // Incluir la cabecera de PersistentDataManager
+#include <sys/time.h>
+#include <WiFi.h>
 
 ClockManager& ClockManager::getInstance() {
     static ClockManager instance; // Instancia única (Singleton)
@@ -10,7 +12,7 @@ ClockManager::ClockManager() {
     timeInitialized = false;
     ntpAttempted = false;
     ntpStartTime = 0;
-    clockStarted = false; // Nueva variable para controlar si el reloj ya se ha iniciado
+    clockStarted = false;
 }
 
 void ClockManager::begin() {
@@ -22,14 +24,19 @@ void ClockManager::begin() {
     const char* defaultTime = PersistentDataManager::getInstance().loadDefaultTime();
     if (defaultTime) {
         // Convertir la cadena de texto a una estructura tm
+        struct tm timeinfo;
         strptime(defaultTime, "%H:%M:%S", &timeinfo);
+        time_t defaultTime_t = mktime(&timeinfo);
+        struct timeval tv = { defaultTime_t, 0 };
+        settimeofday(&tv, nullptr);
         timeInitialized = true;
         Serial.println("Hora cargada desde settings.json.");
     } else {
         // Usar la hora por defecto si no se puede cargar
-        timeinfo.tm_hour = 12;
-        timeinfo.tm_min = 0;
-        timeinfo.tm_sec = 0;
+        struct tm timeinfo = {0, 0, 12, 1, 0, 120}; // 12:00:00 1 Jan 2020
+        time_t defaultTime_t = mktime(&timeinfo);
+        struct timeval tv = { defaultTime_t, 0 };
+        settimeofday(&tv, nullptr);
         timeInitialized = true;
         Serial.println("Hora por defecto configurada (12:00:00).");
     }
@@ -40,44 +47,23 @@ void ClockManager::begin() {
 }
 
 void ClockManager::update() {
-    // Actualizar la hora manualmente cada segundo
-    static unsigned long lastUpdate = 0;
-    if (millis() - lastUpdate >= 1000) {
-        lastUpdate = millis();
-
-        if (timeInitialized) {
-            // Incrementar la hora manualmente
-            timeinfo.tm_sec++;
-            if (timeinfo.tm_sec >= 60) {
-                timeinfo.tm_sec = 0;
-                timeinfo.tm_min++;
-                if (timeinfo.tm_min >= 60) {
-                    timeinfo.tm_min = 0;
-                    timeinfo.tm_hour++;
-                    if (timeinfo.tm_hour >= 24) {
-                        timeinfo.tm_hour = 0;
-                    }
-                }
-            }
+    // No es necesario actualizar manualmente la hora si usamos gettimeofday()
+    // Intentar obtener la hora por NTP en segundo plano (solo una vez)
+    if (!ntpAttempted && timeInitialized) {
+        if (ntpStartTime == 0) {
+            ntpStartTime = millis(); // Iniciar el temporizador para NTP
         }
 
-        // Intentar obtener la hora por NTP en segundo plano (solo una vez)
-        if (!ntpAttempted && timeInitialized) {
-            if (ntpStartTime == 0) {
-                ntpStartTime = millis(); // Iniciar el temporizador para NTP
-            }
-
-            // Verificar si hay conexión WiFi antes de intentar NTP
-            if (WiFi.status() == WL_CONNECTED) {
-                if (millis() - ntpStartTime >= 1000) { // Esperar 1 segundo antes de intentar NTP
-                    ntpAttempted = true;
-                    attemptNtpSync();
-                }
-            } else {
-                // Si no hay conexión WiFi, omitir el intento de NTP
+        // Verificar si hay conexión WiFi antes de intentar NTP
+        if (WiFi.status() == WL_CONNECTED) {
+            if (millis() - ntpStartTime >= 1000) { // Esperar 1 segundo antes de intentar NTP
                 ntpAttempted = true;
-                Serial.println("No hay conexión WiFi. Omitiendo sincronización NTP.");
+                attemptNtpSync();
             }
+        } else {
+            // Si no hay conexión WiFi, omitir el intento de NTP
+            ntpAttempted = true;
+            Serial.println("No hay conexión WiFi. Omitiendo sincronización NTP.");
         }
     }
 }
@@ -94,9 +80,6 @@ void ClockManager::attemptNtpSync() {
     struct tm ntpTimeinfo;
     if (getLocalTime(&ntpTimeinfo, 2000)) { // Esperar 2 segundos para obtener la hora
         Serial.println("Hora obtenida por NTP.");
-
-        // Actualizar la hora actual
-        timeinfo = ntpTimeinfo;
         timeInitialized = true;
     } else {
         Serial.println("No se pudo obtener la hora por NTP.");
@@ -105,10 +88,18 @@ void ClockManager::attemptNtpSync() {
 
 const char* ClockManager::getTimeString() {
     static char timeString[9]; // Buffer para almacenar la cadena de texto
+    struct tm timeinfo;
+    time_t now;
+    time(&now);
+    localtime_r(&now, &timeinfo);
     strftime(timeString, sizeof(timeString), "%H:%M:%S", &timeinfo);
     return timeString;
 }
 
 struct tm ClockManager::getTime() {
+    struct tm timeinfo;
+    time_t now;
+    time(&now);
+    localtime_r(&now, &timeinfo);
     return timeinfo;
 }
