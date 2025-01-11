@@ -116,3 +116,8 @@ void InputTextWithKeyboard::handleKeyboardInput(const std::string& value) {
         }
     }
 }
+
+void InputTextWithKeyboard::setInputPosition(int x_offset, int y_offset) {
+    lv_obj_t* inputContainer = inputText->getContainer();
+    lv_obj_align(inputContainer, LV_ALIGN_TOP_MID, x_offset, y_offset);
+}

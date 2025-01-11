@@ -2,9 +2,9 @@
 #define INPUTTEXTWITHKEYBOARD_H
 
 #include <lvgl.h>
-#include "../InputText/InputText.h" // Ruta corregida
-#include "../Keyboard/Keyboard.h"   // Ruta corregida
-#include "../../screens/Screen.h"   // Ruta corregida para Screen.h
+#include "../InputText/InputText.h"
+#include "../Keyboard/Keyboard.h"
+#include "../../screens/Screen.h"
 
 class InputTextWithKeyboard {
 public:
@@ -18,6 +18,7 @@ public:
     int getMaxLength() const;
     void handleButtonEvent(const ButtonState& state, const ButtonChange& change);
     void setOnTextEnteredCallback(std::function<void(const char*)> callback);
+    void setInputPosition(int x_offset, int y_offset);
 
 private:
     InputText* inputText;

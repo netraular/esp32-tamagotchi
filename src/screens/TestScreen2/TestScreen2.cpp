@@ -8,6 +8,9 @@ void TestScreen2::load() {
     inputTextWithKeyboard = new InputTextWithKeyboard(lv_scr_act(), 6);
     inputTextWithKeyboard->show();
 
+    // Mover el InputText 25 píxeles más abajo
+    inputTextWithKeyboard->setInputPosition(0, 25); // Ajustar la posición vertical
+
     // Configurar el callback para recibir el texto ingresado
     inputTextWithKeyboard->setOnTextEnteredCallback([this](const char* text) {
         if (strcmp(text, "exitLeft") == 0) {
