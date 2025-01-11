@@ -73,8 +73,8 @@ void TestScreen::handleButtonEvent(const ButtonState& state, const ButtonChange&
                     showName = true; // Mostrar el nombre si moveNext devuelve -1
                 }
             } else {
-                // Si no hay ninguna casilla seleccionada, mostrar el texto ingresado
-                showName = true;
+                // Si nya se ha mostrado el nombre introducido y se avanza, ves a PetScreen.
+                screenManager.setScreen("PetScreen");
             }
             // Mostrar el texto ingresado si showName es true
             if (showName) {
