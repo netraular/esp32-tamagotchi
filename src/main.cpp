@@ -23,6 +23,7 @@
 #include "screens/SettingsScreen/WifiScreen/WifiScreen.h"
 #include "screens/SettingsScreen/LanguageScreen/LanguageScreen.h"
 #include "screens/LoadScreen/LoadScreen.h"
+#include "ClockManager/ClockManager.h"
 
 // Objetos globales
 TFT_eSPI tft;
@@ -110,9 +111,13 @@ void setup() {
     screenManager.addScreen("WifiScreen", &wifiScreen);
     screenManager.addScreen("LanguageScreen", &languageScreen);
 
+    // Inicializar el reloj
+    ClockManager::getInstance().begin();
+
     // Inicializar LVGL y cargar la pantalla principal
     screenManager.init();
     screenManager.setScreen("LoadScreen"); // Cargar PetScreen al inicio
+
 
     Serial.println("Setup completado.");
 }
@@ -128,6 +133,9 @@ void loop() {
 
         screenManager.handleButtons();
 
+        // Actualizar el reloj
+        ClockManager::getInstance().update();
+        
         // Actualizar LVGL con el tiempo transcurrido
         lv_tick_inc(elapsed_time);
 

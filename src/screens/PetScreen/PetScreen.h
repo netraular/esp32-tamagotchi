@@ -11,6 +11,7 @@ public:
 
 private:
     lv_obj_t* petLabel; // Etiqueta para mostrar la mascota
+    lv_obj_t* clockLabel; // Etiqueta para mostrar la hora
 };
 
 #endif
