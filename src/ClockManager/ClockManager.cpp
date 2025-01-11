@@ -1,7 +1,5 @@
 #include "ClockManager.h"
 #include "../PersistentDataManager/PersistentDataManager.h"
-#include <sys/time.h>
-#include <WiFi.h>
 
 ClockManager& ClockManager::getInstance() {
     static ClockManager instance; // Instancia única (Singleton)

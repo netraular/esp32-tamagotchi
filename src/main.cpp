@@ -1,7 +1,6 @@
 #include <Arduino.h>
 #include "config.h"
 #include <esp_sntp.h>
-#include <time.h>
 #include "screens/ScreenManager.h"
 #include "screens/ButtonsTestScreen/ButtonsTestScreen.h"
 #include "screens/FoodScreen/FoodScreen.h"
@@ -48,7 +47,6 @@ FavoriteFoodScreen favoriteFoodScreen;
 WifiScreen wifiScreen;
 LanguageScreen languageScreen;
 LoadScreen loadScreen;
-
 // Intervalo de tiempo para 30 FPS (en milisegundos)
 const uint32_t FRAME_INTERVAL = 1000 / 30;
 
