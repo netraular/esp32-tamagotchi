@@ -1,6 +1,5 @@
 #include "MainMenu.h"
 #include "../ScreenManager.h"
-#include "../TestScreen/TestScreen.h" // Incluir la pantalla de prueba
 
 extern ScreenManager screenManager;
 
@@ -20,7 +19,7 @@ void MainMenu::update() {
 void MainMenu::handleButtonEvent(const ButtonState& state, const ButtonChange& change) {
     // Navegar entre las opciones con el botón 1
     if (change.button1Changed && state.button1Pressed) {
-        selectedOption = (selectedOption + 1) % 8; // Cambiar entre las ocho opciones (añadimos TestScreen)
+        selectedOption = (selectedOption + 1) % 9;
         updateMenu();
     }
 
@@ -49,7 +48,10 @@ void MainMenu::handleButtonEvent(const ButtonState& state, const ButtonChange& c
                 screenManager.setScreen("SettingsScreen");
                 break;
             case 7:
-                screenManager.setScreen("TestScreen"); // Nueva opción para acceder a TestScreen
+                screenManager.setScreen("TestScreen");
+                break;
+            case 8:
+                screenManager.setScreen("TestScreen2");
                 break;
         }
     }
@@ -66,28 +68,31 @@ void MainMenu::updateMenu() {
 
     switch (selectedOption) {
         case 0:
-            menuText = "> FoodScreen\n  ButtonsTestScreen\n  SetupScreen\n  RestartScreen\n  ShopScreen\n  PetStatsScreen\n  SettingsScreen\n  TestScreen";
+            menuText = "> FoodScreen\n  ButtonsTestScreen\n  SetupScreen\n  RestartScreen\n  ShopScreen\n  PetStatsScreen\n  SettingsScreen\n  TestScreen\n  TestScreen2";
             break;
         case 1:
-            menuText = "  FoodScreen\n> ButtonsTestScreen\n  SetupScreen\n  RestartScreen\n  ShopScreen\n  PetStatsScreen\n  SettingsScreen\n  TestScreen";
+            menuText = "  FoodScreen\n> ButtonsTestScreen\n  SetupScreen\n  RestartScreen\n  ShopScreen\n  PetStatsScreen\n  SettingsScreen\n  TestScreen\n  TestScreen2";
             break;
         case 2:
-            menuText = "  FoodScreen\n  ButtonsTestScreen\n> SetupScreen\n  RestartScreen\n  ShopScreen\n  PetStatsScreen\n  SettingsScreen\n  TestScreen";
+            menuText = "  FoodScreen\n  ButtonsTestScreen\n> SetupScreen\n  RestartScreen\n  ShopScreen\n  PetStatsScreen\n  SettingsScreen\n  TestScreen\n  TestScreen2";
             break;
         case 3:
-            menuText = "  FoodScreen\n  ButtonsTestScreen\n  SetupScreen\n> RestartScreen\n  ShopScreen\n  PetStatsScreen\n  SettingsScreen\n  TestScreen";
+            menuText = "  FoodScreen\n  ButtonsTestScreen\n  SetupScreen\n> RestartScreen\n  ShopScreen\n  PetStatsScreen\n  SettingsScreen\n  TestScreen\n  TestScreen2";
             break;
         case 4:
-            menuText = "  FoodScreen\n  ButtonsTestScreen\n  SetupScreen\n  RestartScreen\n> ShopScreen\n  PetStatsScreen\n  SettingsScreen\n  TestScreen";
+            menuText = "  FoodScreen\n  ButtonsTestScreen\n  SetupScreen\n  RestartScreen\n> ShopScreen\n  PetStatsScreen\n  SettingsScreen\n  TestScreen\n  TestScreen2";
             break;
         case 5:
-            menuText = "  FoodScreen\n  ButtonsTestScreen\n  SetupScreen\n  RestartScreen\n  ShopScreen\n> PetStatsScreen\n  SettingsScreen\n  TestScreen";
+            menuText = "  FoodScreen\n  ButtonsTestScreen\n  SetupScreen\n  RestartScreen\n  ShopScreen\n> PetStatsScreen\n  SettingsScreen\n  TestScreen\n  TestScreen2";
             break;
         case 6:
-            menuText = "  FoodScreen\n  ButtonsTestScreen\n  SetupScreen\n  RestartScreen\n  ShopScreen\n  PetStatsScreen\n> SettingsScreen\n  TestScreen";
+            menuText = "  FoodScreen\n  ButtonsTestScreen\n  SetupScreen\n  RestartScreen\n  ShopScreen\n  PetStatsScreen\n> SettingsScreen\n  TestScreen\n  TestScreen2";
             break;
         case 7:
-            menuText = "  FoodScreen\n  ButtonsTestScreen\n  SetupScreen\n  RestartScreen\n  ShopScreen\n  PetStatsScreen\n  SettingsScreen\n> TestScreen";
+            menuText = "  FoodScreen\n  ButtonsTestScreen\n  SetupScreen\n  RestartScreen\n  ShopScreen\n  PetStatsScreen\n  SettingsScreen\n> TestScreen\n  TestScreen2";
+            break;
+        case 8:
+            menuText = "  FoodScreen\n  ButtonsTestScreen\n  SetupScreen\n  RestartScreen\n  ShopScreen\n  PetStatsScreen\n  SettingsScreen\n  TestScreen\n> TestScreen2";
             break;
     }
 

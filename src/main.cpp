@@ -23,6 +23,7 @@
 #include "screens/SettingsScreen/LanguageScreen/LanguageScreen.h"
 #include "screens/LoadScreen/LoadScreen.h"
 #include "ClockManager/ClockManager.h"
+#include "screens/TestScreen2/TestScreen2.h"
 
 // Objetos globales
 TFT_eSPI tft;
@@ -47,6 +48,7 @@ FavoriteFoodScreen favoriteFoodScreen;
 WifiScreen wifiScreen;
 LanguageScreen languageScreen;
 LoadScreen loadScreen;
+TestScreen2 testScreen2;
 // Intervalo de tiempo para 30 FPS (en milisegundos)
 const uint32_t FRAME_INTERVAL = 1000 / 30;
 
@@ -108,6 +110,7 @@ void setup() {
     screenManager.addScreen("FavoriteFoodScreen", &favoriteFoodScreen);
     screenManager.addScreen("WifiScreen", &wifiScreen);
     screenManager.addScreen("LanguageScreen", &languageScreen);
+    screenManager.addScreen("TestScreen2", &testScreen2);
 
     // Inicializar el reloj
     ClockManager::getInstance().begin();
