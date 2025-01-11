@@ -1,5 +1,5 @@
 #include "ClockManager.h"
-#include "../PersistentDataManager/PersistentDataManager.h" // Incluir la cabecera de PersistentDataManager
+#include "../PersistentDataManager/PersistentDataManager.h"
 #include <sys/time.h>
 #include <WiFi.h>
 
@@ -25,12 +25,25 @@ void ClockManager::begin() {
     if (defaultTime) {
         // Convertir la cadena de texto a una estructura tm
         struct tm timeinfo;
-        strptime(defaultTime, "%H:%M:%S", &timeinfo);
-        time_t defaultTime_t = mktime(&timeinfo);
-        struct timeval tv = { defaultTime_t, 0 };
-        settimeofday(&tv, nullptr);
-        timeInitialized = true;
-        Serial.println("Hora cargada desde settings.json.");
+        memset(&timeinfo, 0, sizeof(timeinfo)); // Inicializar la estructura tm
+        if (strptime(defaultTime, "%H:%M:%S", &timeinfo) != nullptr) {
+            // Configurar la fecha actual (1 de enero de 2020 como fecha base)
+            timeinfo.tm_year = 120; // Año 2020 (tm_year es años desde 1900)
+            timeinfo.tm_mon = 0;    // Enero (0-11)
+            timeinfo.tm_mday = 1;   // Día 1
+
+            // Convertir a time_t (segundos desde el 1 de enero de 1970)
+            time_t defaultTime_t = mktime(&timeinfo);
+
+            // Configurar la hora del sistema
+            struct timeval tv = { defaultTime_t, 0 };
+            settimeofday(&tv, nullptr);
+
+            timeInitialized = true;
+            Serial.printf("Hora cargada desde settings.json: %s\n", defaultTime);
+        } else {
+            Serial.println("Error al parsear la hora desde settings.json.");
+        }
     } else {
         // Usar la hora por defecto si no se puede cargar
         struct tm timeinfo = {0, 0, 12, 1, 0, 120}; // 12:00:00 1 Jan 2020

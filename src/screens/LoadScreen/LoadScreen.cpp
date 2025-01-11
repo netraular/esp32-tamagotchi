@@ -1,6 +1,6 @@
 #include "LoadScreen.h"
 #include "../ScreenManager.h"
-#include "../../ClockManager/ClockManager.h"
+#include "../../ClockManager/ClockManager.h" // Ruta corregida
 #include "../../PersistentDataManager/PersistentDataManager.h"
 
 extern ScreenManager screenManager;
