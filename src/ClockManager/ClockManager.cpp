@@ -20,7 +20,7 @@ void ClockManager::begin() {
         return; // Si el reloj ya se ha iniciado, no hacer nada
     }
 
-    // Cargar la hora por defecto desde settings.json (si es necesario)
+    // Cargar la hora por defecto desde settings.json al cargar por primera vez el reloj.
     const char* defaultTime = PersistentDataManager::getInstance().loadDefaultTime();
     if (defaultTime) {
         // Convertir la cadena de texto a una estructura tm
@@ -45,7 +45,7 @@ void ClockManager::begin() {
             Serial.println("Error al parsear la hora desde settings.json.");
         }
     } else {
-        // Usar la hora por defecto si no se puede cargar
+        // Usar la hora por defecto si no se puede cargar la hora guardada en settings.json 
         struct tm timeinfo = {0, 0, 12, 1, 0, 120}; // 12:00:00 1 Jan 2020
         time_t defaultTime_t = mktime(&timeinfo);
         struct timeval tv = { defaultTime_t, 0 };
@@ -60,7 +60,6 @@ void ClockManager::begin() {
 }
 
 void ClockManager::update() {
-    // No es necesario actualizar manualmente la hora si usamos gettimeofday()
     // Intentar obtener la hora por NTP en segundo plano (solo una vez)
     if (!ntpAttempted && timeInitialized) {
         if (ntpStartTime == 0) {

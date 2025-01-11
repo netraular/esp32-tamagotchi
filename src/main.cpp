@@ -118,6 +118,8 @@ void setup() {
     screenManager.init();
     screenManager.setScreen("LoadScreen"); // Cargar PetScreen al inicio
 
+    // Actualizar el reloj
+    ClockManager::getInstance().update();
 
     Serial.println("Setup completado.");
 }
@@ -133,8 +135,6 @@ void loop() {
 
         screenManager.handleButtons();
 
-        // Actualizar el reloj
-        ClockManager::getInstance().update();
         
         // Actualizar LVGL con el tiempo transcurrido
         lv_tick_inc(elapsed_time);
