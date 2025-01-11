@@ -3,6 +3,7 @@
 
 #include "../Screen.h"
 #include <time.h> // Para manejar la hora
+#include <lvgl.h> // Para manejar imágenes y etiquetas
 
 class LoadScreen : public Screen {
 public:
@@ -11,13 +12,11 @@ public:
     void handleButtonEvent(const ButtonState& state, const ButtonChange& change) override;
 
 private:
-    lv_obj_t* label;       // Etiqueta para mostrar el mensaje de carga
     lv_obj_t* clockLabel;  // Etiqueta para mostrar la hora
+    lv_obj_t* backgroundImage; // Imagen de fondo
     void updateClock();    // Función para actualizar la hora
-    void setupTime();      // Función para configurar la hora
     void saveCurrentTime(); // Función para guardar la hora actual
-    void loadDefaultTime(); // Función para cargar la hora por defecto desde settings.json
-    void attemptNtpSync();  // Función para intentar obtener la hora por NTP en segundo plano
+    void loadRandomBackground(); // Función para cargar una imagen de fondo aleatoria
 };
 
 #endif
