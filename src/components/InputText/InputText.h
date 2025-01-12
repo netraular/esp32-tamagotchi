@@ -5,6 +5,14 @@
 #include <vector>
 #include <string>
 
+/**
+ * @class InputText
+ * @brief A component for text input using a grid of boxes.
+ * 
+ * This class provides a text input interface where each character is entered into a separate box.
+ * It supports navigation between boxes, character insertion, and text retrieval. The component is
+ * designed to work with LVGL and is suitable for embedded systems with 3 buttons as input methods.
+ */
 class InputText {
 public:
     InputText(lv_obj_t* parent, int maxLength);
@@ -16,23 +24,23 @@ public:
     void setMaxLength(int maxLength);
     int getMaxLength() const;
     lv_obj_t* getContainer() const;
-    void setSelectedBox(int index); // Seleccionar una casilla
-    int insertChar(char c);       // Insertar un carácter en la casilla seleccionada
-    int getSelectedBoxIndex() const; // Obtener el índice de la casilla seleccionada
-    int moveNext();        // Avanzar al siguiente índice
-    int movePrevious();    // Retroceder al índice anterior
+    void setSelectedBox(int index);
+    int insertChar(char c);
+    int getSelectedBoxIndex() const;
+    int moveNext();
+    int movePrevious();
 
 private:
-    lv_obj_t* container; // Contenedor de las casillas de texto
-    std::vector<lv_obj_t*> boxes; // Vector de casillas de texto
-    int maxLength; // Número máximo de caracteres
-    char* textBuffer; // Buffer para almacenar el texto
-    int selectedBoxIndex; // Índice de la casilla seleccionada
+    lv_obj_t* container; // LVGL container for the text boxes
+    std::vector<lv_obj_t*> boxes; // Vector of LVGL objects representing the text boxes
+    int maxLength; // Maximum number of characters allowed
+    char* textBuffer; // Buffer to store the entered text
+    int selectedBoxIndex; // Index of the currently selected box
 
     void createBoxes(lv_obj_t* parent);
     void updateBoxes();
-    void updateSelection(); // Actualizar la selección visual
-    void clearSelection();  // Deseleccionar todas las casillas
+    void updateSelection();
+    void clearSelection();
 };
 
 #endif

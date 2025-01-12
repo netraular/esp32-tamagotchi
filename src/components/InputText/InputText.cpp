@@ -1,73 +1,100 @@
 #include "InputText.h"
 #include <cstring>
 
+/**
+ * @brief Constructor for the InputText class.
+ * 
+ * Initializes the text input component with a parent LVGL object and a maximum word length.
+ * 
+ * @param parent The parent LVGL object (usually a screen or container).
+ * @param maxLength The maximum number of characters allowed in the input.
+ */
 InputText::InputText(lv_obj_t* parent, int maxLength) 
     : maxLength(maxLength), selectedBoxIndex(0) {
-    // Crear el contenedor de las casillas de texto
+    // Create the container for the text boxes
     container = lv_obj_create(parent);
-    lv_obj_set_size(container, 126, 36); // Ajusta el tamaño según sea necesario
-    lv_obj_set_style_pad_all(container, 0, 0); // Sin padding general
-    lv_obj_set_style_border_width(container, 1, 0); // Borde de 1 píxel
-    lv_obj_set_style_border_color(container, lv_color_hex(0x000000), 0); // Borde negro
-    lv_obj_set_style_bg_color(container, lv_color_hex(0xFFFFFF), 0); // Fondo blanco
-    lv_obj_set_style_bg_opa(container, LV_OPA_COVER, 0); // Fondo opaco
+    lv_obj_set_size(container, 126, 36);
+    lv_obj_set_style_pad_all(container, 0, 0);
+    lv_obj_set_style_border_width(container, 1, 0);
+    lv_obj_set_style_border_color(container, lv_color_hex(0x000000), 0);
+    lv_obj_set_style_bg_color(container, lv_color_hex(0xFFFFFF), 0);
+    lv_obj_set_style_bg_opa(container, LV_OPA_COVER, 0);
 
-    // Habilitar el scroll horizontal
+    // Enable horizontal scrolling
     lv_obj_set_scroll_dir(container, LV_DIR_HOR);
-    lv_obj_set_scroll_snap_x(container, LV_SCROLL_SNAP_CENTER); // Centrar la casilla seleccionada
+    lv_obj_set_scroll_snap_x(container, LV_SCROLL_SNAP_CENTER);
 
-    // Crear el buffer para almacenar el texto
+    // Create the buffer to store the text
     textBuffer = new char[maxLength + 1];
     memset(textBuffer, 0, maxLength + 1);
 
-    // Crear las casillas de texto
+    // Create the text boxes
     createBoxes(container);
 
-    // Inicialmente, ninguna casilla está resaltada en rojo
+    // Initially, no box is highlighted in red
     clearSelection();
 }
 
+/**
+ * @brief Creates the text boxes inside the container.
+ * 
+ * This function initializes the LVGL objects for each text box and arranges them in a grid.
+ * 
+ * @param parent The parent LVGL object (the container).
+ */
 void InputText::createBoxes(lv_obj_t* parent) {
-    const int boxWidth = 18; // Ancho fijo de cada casilla
-    const int boxHeight = 20; // Altura fija de cada casilla
+    const int boxWidth = 18; // Fixed width of each box
+    const int boxHeight = 20; // Fixed height of each box
 
     for (int i = 0; i < maxLength; i++) {
         lv_obj_t* box = lv_obj_create(parent);
-        lv_obj_set_size(box, boxWidth, boxHeight); // Tamaño fijo de 18x20 píxeles
-        lv_obj_set_pos(box, 5 + i * boxWidth, ((35 - boxHeight)  / 2) - 1); // Centrar verticalmente
-        lv_obj_set_style_border_width(box, 1, 0); // Borde de 1 píxel
-        lv_obj_set_style_border_color(box, lv_color_hex(0x000000), 0); // Borde negro
-        lv_obj_set_style_pad_all(box, 0, 0); // Sin padding
-        lv_obj_set_style_bg_opa(box, LV_OPA_TRANSP, 0); // Fondo transparente
+        lv_obj_set_size(box, boxWidth, boxHeight);
+        lv_obj_set_pos(box, 5 + i * boxWidth, ((35 - boxHeight)  / 2) - 1);
+        lv_obj_set_style_border_width(box, 1, 0);
+        lv_obj_set_style_border_color(box, lv_color_hex(0x000000), 0);
+        lv_obj_set_style_pad_all(box, 0, 0);
+        lv_obj_set_style_bg_opa(box, LV_OPA_TRANSP, 0);
 
-        // Desactivar scroll horizontal y vertical
+        // Disable scrolling for the box
         lv_obj_set_scrollbar_mode(box, LV_SCROLLBAR_MODE_OFF);
         lv_obj_set_scroll_dir(box, LV_DIR_NONE);
 
-        // Crear una etiqueta para el carácter
+        // Create a label for the character
         lv_obj_t* label = lv_label_create(box);
-        lv_label_set_text(label, ""); // Inicialmente vacío
-        lv_obj_set_style_text_align(label, LV_TEXT_ALIGN_CENTER, 0); // Centrar el texto
-        lv_obj_center(label); // Centrar la etiqueta en la casilla
+        lv_label_set_text(label, "");
+        lv_obj_set_style_text_align(label, LV_TEXT_ALIGN_CENTER, 0);
+        lv_obj_center(label);
 
         boxes.push_back(box);
     }
 }
 
+/**
+ * @brief Updates the text displayed in the boxes.
+ * 
+ * This function refreshes the content of each box based on the current text buffer to display the box character.
+ */
 void InputText::updateBoxes() {
     for (int i = 0; i < maxLength; i++) {
         lv_obj_t* box = boxes[i];
         lv_obj_t* label = lv_obj_get_child(box, 0);
         if (textBuffer[i] != '\0') {
-            lv_label_set_text_fmt(label, "%c", textBuffer[i]); // Mostrar el carácter
+            lv_label_set_text_fmt(label, "%c", textBuffer[i]);
         } else {
-            lv_label_set_text(label, ""); // Casilla vacía
+            lv_label_set_text(label, "");
         }
     }
 }
 
+/**
+ * @brief Sets the currently selected box.
+ * 
+ * This function highlights the selected box by changing its border color to red.
+ * 
+ * @param index The index of the box to select (1-based).
+ */
 void InputText::setSelectedBox(int index) {
-    // Restaurar el borde de la casilla previamente seleccionada
+    // Restore the border color of the previously selected box
     if (selectedBoxIndex > 0 && selectedBoxIndex <= maxLength) {
         lv_obj_set_style_border_color(boxes[selectedBoxIndex - 1], lv_color_hex(0x000000), 0);
     }
@@ -80,45 +107,59 @@ void InputText::setSelectedBox(int index) {
         selectedBoxIndex = 0;
     }
 
-    // Cambiar el borde de la casilla seleccionada a rojo
+    // Change the border color of the selected box to red
     if (selectedBoxIndex > 0 && selectedBoxIndex <= maxLength) {
         lv_obj_set_style_border_color(boxes[selectedBoxIndex - 1], lv_color_hex(0xFF0000), 0);
-        // Desplazar el contenedor para que la casilla seleccionada esté visible
         lv_obj_scroll_to_view(boxes[selectedBoxIndex - 1], LV_ANIM_ON);
     }
 }
 
+/**
+ * @brief Inserts a character into the selected box.
+ * 
+ * This function adds a character to the text buffer at the position of the selected box.
+ * 
+ * @param c The character to insert.
+ * @return The index of the next selected box.
+ */
 int InputText::insertChar(char c) {
     if (selectedBoxIndex > 0 && selectedBoxIndex <= maxLength) {
-        // Insertar el carácter en la casilla seleccionada
         textBuffer[selectedBoxIndex - 1] = c;
         updateBoxes();
-
-        // Mover el selector a la siguiente casilla con un carácter
         return moveNext();
     }
     return selectedBoxIndex;
 }
 
+/**
+ * @brief Gets the index of the currently selected box.
+ * 
+ * @return The index of the selected box (1-based).
+ */
 int InputText::getSelectedBoxIndex() const {
-    return selectedBoxIndex; // Devolver el índice de la casilla seleccionada
+    return selectedBoxIndex;
 }
 
+/**
+ * @brief Moves the selection to the next box.
+ * 
+ * This function advances the selection to the next box with a character or exits if no more boxes are available.
+ * 
+ * @return The index of the next selected box or -1 if no more boxes were available.
+ */
 int InputText::moveNext() {
     if (selectedBoxIndex == 0){
         setSelectedBox(1);
-    }else if(selectedBoxIndex > 0 && selectedBoxIndex <= maxLength){
-         if (textBuffer[selectedBoxIndex - 1] == '\0') {
+    } else if (selectedBoxIndex > 0 && selectedBoxIndex <= maxLength) {
+        if (textBuffer[selectedBoxIndex - 1] == '\0') {
             setSelectedBox(-1);
         } else {
-            // Mover a la siguiente casilla
             setSelectedBox(selectedBoxIndex + 1);
         }
     } else if (selectedBoxIndex == -1) {
-        //Estamos fuera del selector.
+        // No more boxes to select
     }
 
-    // Desplazar el contenedor para que la casilla seleccionada esté visible
     if (selectedBoxIndex > 0 && selectedBoxIndex <= maxLength) {
         lv_obj_scroll_to_view(boxes[selectedBoxIndex - 1], LV_ANIM_ON);
     }
@@ -127,24 +168,27 @@ int InputText::moveNext() {
     return selectedBoxIndex;
 }
 
+/**
+ * @brief Moves the selection to the previous box.
+ * 
+ * This function moves the selection to the previous box or exits if no more boxes are available.
+ * 
+ * @return The index of the previous selected box or 0 if no more boxes were available.
+ */
 int InputText::movePrevious() {
-    if (selectedBoxIndex == 0){
-        //Estamos fuera del selector.
-    }else if(selectedBoxIndex > 0 && selectedBoxIndex <= maxLength){
-        // Mover a la casilla anterior
+    if (selectedBoxIndex == 0) {
+        // No more boxes to select
+    } else if (selectedBoxIndex > 0 && selectedBoxIndex <= maxLength) {
         setSelectedBox(selectedBoxIndex - 1);
     } else if (selectedBoxIndex == -1) {
-        //Vamos a la última posición con un carácter introducido
-
-        // Buscar la última casilla con un carácter introducido
+        // Move to the last filled box
         int lastFilledIndex = -1;
         for (int i = maxLength - 1; i >= 0; i--) {
             if (textBuffer[i] != '\0') {
-                lastFilledIndex = i + 1; // +1 porque selectedBoxIndex es 1-based
+                lastFilledIndex = i + 1;
                 break;
             }
         }
-        // Si no hay ningún carácter, seleccionar la primera casilla
         if (lastFilledIndex == -1) {
             selectedBoxIndex = 1;
         } else {
@@ -152,7 +196,6 @@ int InputText::movePrevious() {
         }
     }
 
-    // Desplazar el contenedor para que la casilla seleccionada esté visible
     if (selectedBoxIndex > 0 && selectedBoxIndex <= maxLength) {
         lv_obj_scroll_to_view(boxes[selectedBoxIndex - 1], LV_ANIM_ON);
     }
@@ -161,43 +204,69 @@ int InputText::movePrevious() {
     return selectedBoxIndex;
 }
 
+/**
+ * @brief Clears the selection (deselects all boxes).
+ */
 void InputText::clearSelection() {
     if ((selectedBoxIndex > 0) and (selectedBoxIndex <= maxLength)) {
-            lv_obj_set_style_border_color(boxes[selectedBoxIndex-1], lv_color_hex(0x000000), 0);
+        lv_obj_set_style_border_color(boxes[selectedBoxIndex - 1], lv_color_hex(0x000000), 0);
     }
-    selectedBoxIndex=0;
+    selectedBoxIndex = 0;
 }
 
+/**
+ * @brief Updates the visual selection (highlights the selected box).
+ */
 void InputText::updateSelection() {
     if ((selectedBoxIndex > 0) and (selectedBoxIndex <= maxLength)) {
-        lv_obj_set_style_border_color(boxes[selectedBoxIndex-1], lv_color_hex(0xFF0000), 0);
+        lv_obj_set_style_border_color(boxes[selectedBoxIndex - 1], lv_color_hex(0xFF0000), 0);
     }
 }
 
+/**
+ * @brief Shows the input text component.
+ */
 void InputText::show() {
     lv_obj_clear_flag(container, LV_OBJ_FLAG_HIDDEN);
 }
 
+/**
+ * @brief Hides the input text component.
+ */
 void InputText::hide() {
     lv_obj_add_flag(container, LV_OBJ_FLAG_HIDDEN);
 }
 
+/**
+ * @brief Checks if the input text component is visible.
+ * 
+ * @return true if visible, false otherwise.
+ */
 bool InputText::isVisible() const {
     return !lv_obj_has_flag(container, LV_OBJ_FLAG_HIDDEN);
 }
 
+/**
+ * @brief Sets a word in the input component.
+ * 
+ * @param text The text to set.
+ */
 void InputText::setText(const char* text) {
     strncpy(textBuffer, text, maxLength);
-    textBuffer[maxLength] = '\0'; // Asegurar que el texto no exceda el límite
+    textBuffer[maxLength] = '\0';
     updateBoxes();
 }
 
+/**
+ * @brief Gets the text entered in the input component.
+ * 
+ * @return The entered text as a null-terminated string.
+ */
 const char* InputText::getText() const {
-    static char result[50]; // Asegúrate de que el tamaño del buffer sea suficiente
+    static char result[50];
     int resultIndex = 0;
     bool foundNonEmpty = false;
 
-    // Ignorar elementos vacíos al inicio
     for (int i = 0; i < maxLength; i++) {
         if (textBuffer[i] != '\0') {
             foundNonEmpty = true;
@@ -207,22 +276,25 @@ const char* InputText::getText() const {
         }
     }
 
-    // Eliminar elementos vacíos al final
     while (resultIndex > 0 && result[resultIndex - 1] == '\0') {
         resultIndex--;
     }
 
-    // Reemplazar elementos vacíos intermedios por espacios en blanco
     for (int i = 0; i < resultIndex; i++) {
         if (result[i] == '\0') {
             result[i] = ' ';
         }
     }
 
-    result[resultIndex] = '\0'; // Asegurar que el resultado esté terminado con un carácter nulo
+    result[resultIndex] = '\0';
     return result;
 }
 
+/**
+ * @brief Sets the maximum length of the input text.
+ * 
+ * @param maxLength The maximum number of characters allowed.
+ */
 void InputText::setMaxLength(int maxLength) {
     this->maxLength = maxLength;
     delete[] textBuffer;
@@ -231,10 +303,20 @@ void InputText::setMaxLength(int maxLength) {
     createBoxes(container);
 }
 
+/**
+ * @brief Gets the maximum length of the input text.
+ * 
+ * @return The maximum number of characters allowed.
+ */
 int InputText::getMaxLength() const {
     return maxLength;
 }
 
+/**
+ * @brief Gets the LVGL container of the input text component.
+ * 
+ * @return The LVGL container object.
+ */
 lv_obj_t* InputText::getContainer() const {
     return container;
 }
