@@ -25,7 +25,7 @@
 #include "ClockManager/ClockManager.h"
 #include "screens/TestScreen2/TestScreen2.h"
 
-// Objetos globales
+// Global objects
 TFT_eSPI tft;
 ScreenManager screenManager(tft);
 ButtonsTestScreen buttonsTestScreen;
@@ -49,49 +49,51 @@ WifiScreen wifiScreen;
 LanguageScreen languageScreen;
 LoadScreen loadScreen;
 TestScreen2 testScreen2;
-// Intervalo de tiempo para 30 FPS (en milisegundos)
+
+// Frame interval for 30 FPS (in milliseconds)
 const uint32_t FRAME_INTERVAL = 1000 / 30;
 
-void setupTime() {
-    configTime(0, 0, "pool.ntp.org", "time.nist.gov"); // Configurar servidores NTP
-    setenv("TZ", "CET-1CEST,M3.5.0,M10.5.0/3", 1);     // Configurar la zona horaria (ejemplo para Europa Central)
-    tzset();
-}
-
+/**
+ * @brief Initializes the system, including LittleFS, input pins, screens, clock, and LVGL.
+ * 
+ * This function sets up the following:
+ * - Initializes LittleFS and creates initial files if they don't exist.
+ * - Configures input pins for buttons and buzzer.
+ * - Registers all screens with the ScreenManager.
+ * - Initializes the system clock and synchronizes it with NTP if possible.
+ * - Initializes LVGL and sets the initial screen to "LoadScreen".
+ */
 void setup() {
     Serial.begin(115200);
-    Serial.println("Inicializando el sistema...");
-
-    // Configurar la hora
-    setupTime();
+    Serial.println("Initializing system...");
     
-    // Inicializar LittleFS y crear archivos iniciales
+    // Initialize LittleFS and create initial files
     if (!persistentDataManager.init()) {
-        Serial.println("Error al inicializar LittleFS. Intentando formatear...");
+        Serial.println("Failed to initialize LittleFS. Attempting to format...");
         if (!persistentDataManager.format()) {
-            Serial.println("Error al formatear LittleFS.");
+            Serial.println("Failed to format LittleFS.");
             return;
         }
         if (!persistentDataManager.init()) {
-            Serial.println("Error al inicializar LittleFS después de formatear.");
+            Serial.println("Failed to initialize LittleFS after formatting.");
             return;
         }
     }
 
-    // Crear archivos iniciales si no existen
+    // Create initial files if they don't exist
     if (!persistentDataManager.createInitialFiles()) {
-        Serial.println("Error al crear archivos iniciales.");
+        Serial.println("Failed to create initial files.");
         return;
     }
 
-    // Configurar pines
+    // Configure input pins
     pinMode(BUZZER_PIN, OUTPUT);
-    pinMode(BUTTON1_PIN, INPUT_PULLUP); // Usar resistencia pull-up interna
-    pinMode(BUTTON2_PIN, INPUT_PULLUP); // Usar resistencia pull-up interna
-    pinMode(BUTTON3_PIN, INPUT_PULLUP); // Usar resistencia pull-up interna
+    pinMode(BUTTON1_PIN, INPUT_PULLUP); // Use internal pull-up resistor
+    pinMode(BUTTON2_PIN, INPUT_PULLUP); // Use internal pull-up resistor
+    pinMode(BUTTON3_PIN, INPUT_PULLUP); // Use internal pull-up resistor
 
-    // Registrar pantallas en ScreenManager
-    screenManager.addScreen("LoadScreen", &loadScreen); // Registrar LoadScreen
+    // Register screens with ScreenManager
+    screenManager.addScreen("LoadScreen", &loadScreen); // Register LoadScreen
     screenManager.addScreen("ButtonsTestScreen", &buttonsTestScreen);
     screenManager.addScreen("FoodScreen", &foodScreen);
     screenManager.addScreen("MainMenu", &mainMenu);
@@ -112,35 +114,44 @@ void setup() {
     screenManager.addScreen("LanguageScreen", &languageScreen);
     screenManager.addScreen("TestScreen2", &testScreen2);
 
-    // Inicializar el reloj
+    // Initialize the system clock
     ClockManager::getInstance().begin();
 
-    // Inicializar LVGL y cargar la pantalla principal
+    // Initialize LVGL and load the initial screen
     screenManager.init();
-    screenManager.setScreen("LoadScreen"); // Cargar PetScreen al inicio
+    screenManager.setScreen("LoadScreen"); // Set initial screen to LoadScreen
 
-    // Actualizar el reloj
+    // Update the clock
     ClockManager::getInstance().update();
 
-    Serial.println("Setup completado.");
+    Serial.println("Setup completed.");
 }
 
+/**
+ * @brief Main loop that controls the flow of actions at 30 FPS using millis().
+ * 
+ * This function:
+ * - Ensures the loop runs at a consistent frame rate (30 FPS).
+ * - Handles button state changes and updates the screen accordingly.
+ * - Updates LVGL's internal timer using `lv_tick_inc`.
+ * - Calls the `update` function of the active screen to refresh its content.
+ */
 void loop() {
-    static uint32_t last_frame_time = millis(); // Tiempo del último fotograma
+    static uint32_t last_frame_time = millis(); // Time of the last frame
     uint32_t current_time = millis();
-    uint32_t elapsed_time = current_time - last_frame_time; // Tiempo transcurrido desde el último fotograma
+    uint32_t elapsed_time = current_time - last_frame_time; // Time elapsed since the last frame
 
-    // Actualizar cada fotograma (30 FPS)
+    // Update every frame (30 FPS)
     if (elapsed_time >= FRAME_INTERVAL) {
-        last_frame_time = current_time; // Reiniciar el tiempo del último fotograma
+        last_frame_time = current_time; // Reset the last frame time
 
+        // Handle button state changes
         screenManager.handleButtons();
 
-        
-        // Actualizar LVGL con el tiempo transcurrido
+        // Update LVGL's internal timer with the elapsed time
         lv_tick_inc(elapsed_time);
 
-        // Actualizar el ScreenManager (LVGL y la pantalla activa)
+        // Update the ScreenManager (LVGL and the active screen)
         screenManager.update();
     }
 }
