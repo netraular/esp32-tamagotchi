@@ -4,10 +4,33 @@
 extern ScreenManager screenManager;
 
 void MainMenu::load() {
-    // Crear una etiqueta para el menú
-    menuLabel = lv_label_create(lv_scr_act());
-    selectedOption = 0; // Inicialmente seleccionar la primera opción
-    updateMenu();
+    // Crear una lista de LVGL
+    list = lv_list_create(lv_scr_act());
+    lv_obj_set_size(list, 160, 128); // Ajustar al tamaño de la pantalla
+    lv_obj_align(list, LV_ALIGN_CENTER, 0, 0);
+
+    // Añadir opciones al menú
+    const char* menuOptions[] = {
+        "FoodScreen",
+        "ButtonsTestScreen",
+        "SetupScreen",
+        "RestartScreen",
+        "ShopScreen",
+        "PetStatsScreen",
+        "SettingsScreen",
+        "TestScreen",
+        "TestScreen2",
+        "RoomSelectionScreen"
+    };
+
+    for (const char* option : menuOptions) {
+        lv_obj_t* item = lv_list_add_btn(list, NULL, option); // Añadir botón a la lista
+        menuItems.push_back(item); // Guardar el elemento en el vector
+    }
+
+    // Seleccionar la primera opción por defecto
+    selectedItem = menuItems[0];
+    updateSelection();
 
     Serial.println("MainMenu cargada.");
 }
@@ -17,87 +40,42 @@ void MainMenu::update() {
 }
 
 void MainMenu::handleButtonEvent(const ButtonState& state, const ButtonChange& change) {
-    // Navegar entre las opciones con el botón 1
+    // Navegar entre las opciones con el botón 1 (abajo) y el botón 3 (arriba)
     if (change.button1Changed && state.button1Pressed) {
-        selectedOption = (selectedOption + 1) % 9;
-        updateMenu();
+        // Mover la selección hacia abajo
+        int currentIndex = std::distance(menuItems.begin(), std::find(menuItems.begin(), menuItems.end(), selectedItem));
+        int nextIndex = (currentIndex + 1) % menuItems.size();
+        selectedItem = menuItems[nextIndex];
+        updateSelection();
+    }
+    if (change.button3Changed && state.button3Pressed) {
+        // Mover la selección hacia arriba
+        int currentIndex = std::distance(menuItems.begin(), std::find(menuItems.begin(), menuItems.end(), selectedItem));
+        int prevIndex = (currentIndex - 1 + menuItems.size()) % menuItems.size();
+        selectedItem = menuItems[prevIndex];
+        updateSelection();
     }
 
     // Seleccionar una opción con el botón 2
     if (change.button2Changed && state.button2Pressed) {
-        switch (selectedOption) {
-            case 0:
-                screenManager.setScreen("FoodScreen");
-                break;
-            case 1:
-                screenManager.setScreen("ButtonsTestScreen");
-                break;
-            case 2:
-                screenManager.setScreen("SetupScreen");
-                break;
-            case 3:
-                screenManager.setScreen("RestartScreen");
-                break;
-            case 4:
-                screenManager.setScreen("ShopScreen");
-                break;
-            case 5:
-                screenManager.setScreen("PetStatsScreen");
-                break;
-            case 6:
-                screenManager.setScreen("SettingsScreen");
-                break;
-            case 7:
-                screenManager.setScreen("TestScreen");
-                break;
-            case 8:
-                screenManager.setScreen("TestScreen2");
-                break;
-        }
-    }
+        // Obtener el texto del elemento seleccionado
+        const char* selectedOption = lv_list_get_btn_text(list, selectedItem); // Corregido: pasar 'list' y 'selectedItem'
 
-    // Si se presiona el botón 3, ir a LoadScreen
-    if (change.button3Changed && state.button3Pressed) {
-        screenManager.setScreen("LoadScreen");
+        // Navegar a la pantalla correspondiente
+        screenManager.setScreen(selectedOption);
     }
 }
 
-void MainMenu::updateMenu() {
-    // Construir el texto del menú
-    const char* menuText = "";  // Inicializar con un valor predeterminado
-
-    switch (selectedOption) {
-        case 0:
-            menuText = "> FoodScreen\n  ButtonsTestScreen\n  SetupScreen\n  RestartScreen\n  ShopScreen\n  PetStatsScreen\n  SettingsScreen\n  TestScreen\n  TestScreen2";
-            break;
-        case 1:
-            menuText = "  FoodScreen\n> ButtonsTestScreen\n  SetupScreen\n  RestartScreen\n  ShopScreen\n  PetStatsScreen\n  SettingsScreen\n  TestScreen\n  TestScreen2";
-            break;
-        case 2:
-            menuText = "  FoodScreen\n  ButtonsTestScreen\n> SetupScreen\n  RestartScreen\n  ShopScreen\n  PetStatsScreen\n  SettingsScreen\n  TestScreen\n  TestScreen2";
-            break;
-        case 3:
-            menuText = "  FoodScreen\n  ButtonsTestScreen\n  SetupScreen\n> RestartScreen\n  ShopScreen\n  PetStatsScreen\n  SettingsScreen\n  TestScreen\n  TestScreen2";
-            break;
-        case 4:
-            menuText = "  FoodScreen\n  ButtonsTestScreen\n  SetupScreen\n  RestartScreen\n> ShopScreen\n  PetStatsScreen\n  SettingsScreen\n  TestScreen\n  TestScreen2";
-            break;
-        case 5:
-            menuText = "  FoodScreen\n  ButtonsTestScreen\n  SetupScreen\n  RestartScreen\n  ShopScreen\n> PetStatsScreen\n  SettingsScreen\n  TestScreen\n  TestScreen2";
-            break;
-        case 6:
-            menuText = "  FoodScreen\n  ButtonsTestScreen\n  SetupScreen\n  RestartScreen\n  ShopScreen\n  PetStatsScreen\n> SettingsScreen\n  TestScreen\n  TestScreen2";
-            break;
-        case 7:
-            menuText = "  FoodScreen\n  ButtonsTestScreen\n  SetupScreen\n  RestartScreen\n  ShopScreen\n  PetStatsScreen\n  SettingsScreen\n> TestScreen\n  TestScreen2";
-            break;
-        case 8:
-            menuText = "  FoodScreen\n  ButtonsTestScreen\n  SetupScreen\n  RestartScreen\n  ShopScreen\n  PetStatsScreen\n  SettingsScreen\n  TestScreen\n> TestScreen2";
-            break;
+void MainMenu::updateSelection() {
+    // Resaltar el elemento seleccionado
+    for (lv_obj_t* item : menuItems) {
+        if (item == selectedItem) {
+            lv_obj_set_style_bg_color(item, lv_color_hex(0x007FFF), 0); // Resaltar en azul
+            lv_obj_set_style_text_color(item, lv_color_hex(0xFFFFFF), 0); // Texto en blanco
+            lv_obj_scroll_to_view(item, LV_ANIM_ON); // Desplazar para que el elemento sea visible
+        } else {
+            lv_obj_set_style_bg_color(item, lv_color_hex(0xFFFFFF), 0); // Fondo blanco
+            lv_obj_set_style_text_color(item, lv_color_hex(0x000000), 0); // Texto en negro
+        }
     }
-
-    // Actualizar la etiqueta del menú
-    lv_label_set_text(menuLabel, menuText);
-    lv_obj_set_style_text_font(menuLabel, &lv_font_montserrat_12, 0);
-    lv_obj_align(menuLabel, LV_ALIGN_CENTER, 0, 0); // Centrar el texto en la pantalla
 }

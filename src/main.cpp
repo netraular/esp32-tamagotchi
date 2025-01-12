@@ -24,6 +24,7 @@
 #include "screens/LoadScreen/LoadScreen.h"
 #include "ClockManager/ClockManager.h"
 #include "screens/TestScreen2/TestScreen2.h"
+#include "screens/RoomSelectionScreen/RoomSelectionScreen.h"
 
 // Global objects
 TFT_eSPI tft;
@@ -49,6 +50,7 @@ WifiScreen wifiScreen;
 LanguageScreen languageScreen;
 LoadScreen loadScreen;
 TestScreen2 testScreen2;
+RoomSelectionScreen roomSelectionScreen;
 
 // Frame interval for 30 FPS (in milliseconds)
 const uint32_t FRAME_INTERVAL = 1000 / 30;
@@ -113,7 +115,8 @@ void setup() {
     screenManager.addScreen("WifiScreen", &wifiScreen);
     screenManager.addScreen("LanguageScreen", &languageScreen);
     screenManager.addScreen("TestScreen2", &testScreen2);
-
+    screenManager.addScreen("RoomSelectionScreen", &roomSelectionScreen);
+    
     // Initialize the system clock
     ClockManager::getInstance().begin();
 
