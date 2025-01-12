@@ -15,7 +15,6 @@ void BuzzerPlayer::loadSong(const int* melody, const int* noteDurations, int len
     this->isPlaying = true;
     this->previousMillis = millis();
     this->noteDuration = 1000 / noteDurations[0];
-    playNextNote();
 }
 
 void BuzzerPlayer::play() {
