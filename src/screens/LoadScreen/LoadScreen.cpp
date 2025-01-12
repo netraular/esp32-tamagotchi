@@ -1,3 +1,4 @@
+// src/screens/LoadScreen/LoadScreen.cpp
 #include "LoadScreen.h"
 #include "../ScreenManager.h"
 #include "../../ClockManager/ClockManager.h"
@@ -5,6 +6,7 @@
 #include <lvgl.h>
 #include <vector>
 #include "esp_system.h" // Para esp_random()
+#include "../../assets/sounds/song1.h" // Incluir la canción
 
 // Declarar las variables externas de las imágenes de fondo
 extern const lv_img_dsc_t loading1;
@@ -15,6 +17,11 @@ extern const lv_img_dsc_t GreenButtonUp;
 extern const lv_img_dsc_t GreenButtonDown;
 
 extern ScreenManager screenManager;
+
+// Definir el constructor de LoadScreen
+LoadScreen::LoadScreen() 
+    : buzzerPlayer(BUZZER_PIN) { // Inicializar el BuzzerPlayer con el pin del buzzer
+}
 
 void LoadScreen::load() {
     // Limpiar la pantalla si ya había contenido
@@ -82,6 +89,10 @@ void LoadScreen::load() {
     // Inicializar el reloj solo si no se ha inicializado antes
     ClockManager::getInstance().begin();
 
+    // Cargar y reproducir la canción
+    buzzerPlayer.loadSong(melody, noteDurations, sizeof(melody) / sizeof(melody[0]));
+    buzzerPlayer.play();
+
     Serial.println("LoadScreen cargada.");
 }
 
@@ -94,6 +105,9 @@ void LoadScreen::update() {
 
     // Actualizar la etiqueta del reloj
     lv_label_set_text(clockLabel, timeString);
+
+    // Actualizar la reproducción de la canción
+    buzzerPlayer.update();
 }
 
 void LoadScreen::handleButtonEvent(const ButtonState& state, const ButtonChange& change) {
