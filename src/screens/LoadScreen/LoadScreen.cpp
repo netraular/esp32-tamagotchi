@@ -117,7 +117,7 @@ void LoadScreen::handleButtonEvent(const ButtonState& state, const ButtonChange&
 
     // Si se presiona el botón 2, ir a PetScreen
     if (change.button2Changed && state.button2Pressed) {
-        screenManager.setScreen("PetScreen");
+        screenManager.setScreen("RoomSelectionScreen");
     }
 
     // Si se presiona el botón 3, ir a MainMenu

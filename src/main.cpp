@@ -25,6 +25,12 @@
 #include "ClockManager/ClockManager.h"
 #include "screens/TestScreen2/TestScreen2.h"
 #include "screens/RoomSelectionScreen/RoomSelectionScreen.h"
+#include "screens/RoomSelectionScreen/BedroomScreen/BedroomScreen.h"
+#include "screens/RoomSelectionScreen/BathroomScreen/BathroomScreen.h"
+#include "screens/RoomSelectionScreen/KitchenScreen/KitchenScreen.h"
+#include "screens/RoomSelectionScreen/LivingRoomScreen/LivingRoomScreen.h"
+#include "screens/RoomSelectionScreen/GardenScreen/GardenScreen.h"
+#include "screens/RoomSelectionScreen/OutsideScreen/OutsideScreen.h"
 
 // Global objects
 TFT_eSPI tft;
@@ -51,6 +57,12 @@ LanguageScreen languageScreen;
 LoadScreen loadScreen;
 TestScreen2 testScreen2;
 RoomSelectionScreen roomSelectionScreen;
+BedroomScreen bedroomScreen;
+BathroomScreen bathroomScreen;
+KitchenScreen kitchenScreen;
+LivingRoomScreen livingRoomScreen;
+GardenScreen gardenScreen;
+OutsideScreen outsideScreen;
 
 // Frame interval for 30 FPS (in milliseconds)
 const uint32_t FRAME_INTERVAL = 1000 / 30;
@@ -116,7 +128,13 @@ void setup() {
     screenManager.addScreen("LanguageScreen", &languageScreen);
     screenManager.addScreen("TestScreen2", &testScreen2);
     screenManager.addScreen("RoomSelectionScreen", &roomSelectionScreen);
-    
+    screenManager.addScreen("Bedroom", &bedroomScreen);
+    screenManager.addScreen("Bathroom", &bathroomScreen);
+    screenManager.addScreen("Kitchen", &kitchenScreen);
+    screenManager.addScreen("LivingRoom", &livingRoomScreen);
+    screenManager.addScreen("Garden", &gardenScreen);
+    screenManager.addScreen("Outside", &outsideScreen);
+
     // Initialize the system clock
     ClockManager::getInstance().begin();
 
