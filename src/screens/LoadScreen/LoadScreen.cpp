@@ -90,7 +90,7 @@ void LoadScreen::load() {
     ClockManager::getInstance().begin();
 
     // Cargar y reproducir la canción
-    buzzerPlayer.loadSong(melody, noteDurations, sizeof(melody) / sizeof(melody[0]));
+    buzzerPlayer.loadSong(melody, notes * 2, tempo); // notes * 2 porque melody tiene notas y duraciones
     buzzerPlayer.play();
 
     Serial.println("LoadScreen cargada.");
