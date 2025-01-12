@@ -10,7 +10,6 @@
 
 // Declarar las variables externas de las imágenes de fondo
 extern const lv_img_dsc_t loading1;
-extern const lv_img_dsc_t loading6;
 
 // Declarar las variables externas de las imágenes del botón
 extern const lv_img_dsc_t GreenButtonUp;
@@ -142,7 +141,7 @@ void LoadScreen::saveCurrentTime() {
 void LoadScreen::loadRandomBackground() {
     // Vector con las imágenes de fondo disponibles
     std::vector<const lv_img_dsc_t*> backgrounds = {
-        &loading1, &loading6
+        &loading1
     };
 
     // Generar un número aleatorio usando esp_random()
