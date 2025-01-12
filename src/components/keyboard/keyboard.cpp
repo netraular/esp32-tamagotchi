@@ -2,13 +2,21 @@
 #include <string>
 #include <Arduino.h>
 
+/**
+ * @brief Constructor for the Keyboard class.
+ * 
+ * Initializes the keyboard with a parent LVGL object and sets up the UI elements.
+ * 
+ * @param parent Parent LVGL object (usually the screen or a container).
+ */
 Keyboard::Keyboard(lv_obj_t* parent) : selectedRowIndex(0), selectedLetterIndex(0), currentMode(Mode::SelectRow), visibleRowStart(0), visibleRowCount(3) {
     keyboardContainer = lv_obj_create(parent);
     lv_obj_set_size(keyboardContainer, 128, 70);
     lv_obj_align(keyboardContainer, LV_ALIGN_BOTTOM_MID, 0, 0);
     lv_obj_set_scrollbar_mode(keyboardContainer, LV_SCROLLBAR_MODE_OFF);
-    lv_obj_set_style_pad_all(keyboardContainer, 0, 0); // Sin padding general
+    lv_obj_set_style_pad_all(keyboardContainer, 0, 0); // No padding
 
+    // Define the rows of characters
     rows = {
         {'A', 'B', 'C', 'D', 'E', 'F'},
         {'G', 'H', 'I', 'J', 'K', 'L'},
@@ -28,12 +36,18 @@ Keyboard::Keyboard(lv_obj_t* parent) : selectedRowIndex(0), selectedLetterIndex(
         {'/', '#', ',', '.', ';', ':'}
     };
 
+    // Create the keyboard UI
     createKeyboard();
     updateSelection();
 
-    Serial.println("Teclado inicializado.");
+    Serial.println("Keyboard initialized.");
 }
 
+/**
+ * @brief Creates the keyboard UI.
+ * 
+ * This function sets up the rows and buttons for the keyboard, including their layout and styling.
+ */
 void Keyboard::createKeyboard() {
     const int buttonSize = 16;
     const int spacing = 2;
@@ -77,9 +91,15 @@ void Keyboard::createKeyboard() {
     }
 
     updateVisibleRows();
-    Serial.println("Teclado creado con éxito.");
+    Serial.println("Keyboard created successfully.");
 }
 
+/**
+ * @brief Updates the visible rows of the keyboard.
+ * 
+ * This function ensures that only the currently visible rows are displayed, based on the
+ * scroll position.
+ */
 void Keyboard::updateVisibleRows() {
     for (int i = 0; i < visibleRowCount; i++) {
         int rowIndex = visibleRowStart + i;
@@ -98,11 +118,19 @@ void Keyboard::updateVisibleRows() {
     }
 }
 
+/**
+ * @brief Handles button events for keyboard navigation and selection.
+ * 
+ * This function processes button presses to navigate between rows and characters, select
+ * a character, or exit the keyboard.
+ * 
+ * @param button The button that was pressed (1, 2, or 3).
+ */
 void Keyboard::handleButtonEvent(int button) {
     if (currentMode == Mode::SelectRow) {
         if (button == 1) {
-            // Cambiar a la siguiente fila
-            selectedRowIndex = (selectedRowIndex + 1) % rows.size(); // Ciclar al principio si se llega al final
+            // Move to the next row
+            selectedRowIndex = (selectedRowIndex + 1) % rows.size();
             if (selectedRowIndex >= visibleRowStart + visibleRowCount) {
                 visibleRowStart = selectedRowIndex - visibleRowCount + 1;
                 updateVisibleRows();
@@ -110,14 +138,14 @@ void Keyboard::handleButtonEvent(int button) {
                 visibleRowStart = selectedRowIndex;
                 updateVisibleRows();
             }
-            Serial.printf("Fila marcada: %d\n", selectedRowIndex);
+            Serial.printf("Row selected: %d\n", selectedRowIndex);
         } else if (button == 2) {
-            // Seleccionar la fila actual y entrar en el modo de selección de letras
+            // Enter character selection mode
             selectLetter();
-            Serial.println("Modo de selección de letra activado");
+            Serial.println("Character selection mode activated");
         } else if (button == 3) {
-            // Salir del teclado
-            Serial.println("Botón 3 presionado: Saliendo del teclado");
+            // Exit the keyboard
+            Serial.println("Button 3 pressed: Exiting keyboard");
             if (onLetterSelectedCallback) {
                 onLetterSelectedCallback("exit");
             }
@@ -125,37 +153,42 @@ void Keyboard::handleButtonEvent(int button) {
         }
     } else if (currentMode == Mode::SelectLetter) {
         if (button == 1) {
-            // Cambiar a la siguiente letra
+            // Move to the next character
             selectedLetterIndex = (selectedLetterIndex + 1) % rows[selectedRowIndex].size();
-            Serial.printf("Letra marcada: %c\n", rows[selectedRowIndex][selectedLetterIndex]);
+            Serial.printf("Character selected: %c\n", rows[selectedRowIndex][selectedLetterIndex]);
         } else if (button == 2) {
-            // Seleccionar la letra actual y enviarla como output
+            // Select the current character
             char selectedLetter = rows[selectedRowIndex][selectedLetterIndex];
             if (selectedLetter != '\0') {
-                Serial.printf("Letra enviada: %c\n", selectedLetter);
+                Serial.printf("Character sent: %c\n", selectedLetter);
                 if (onLetterSelectedCallback) {
                     onLetterSelectedCallback(std::string(1, selectedLetter));
                 }
             }
-            // Volver al modo de selección de fila
+            // Return to row selection mode
             selectRow();
-            Serial.println("Volviendo al modo de selección de fila");
+            Serial.println("Returned to row selection mode");
         } else if (button == 3) {
-            // Volver al modo de selección de fila
+            // Return to row selection mode
             selectRow();
-            Serial.println("Botón 3 presionado: Volviendo al modo de selección de fila");
+            Serial.println("Button 3 pressed: Returned to row selection mode");
         }
     }
 
-    // Actualizar la selección visual
+    // Update the visual selection
     updateSelection();
 
-    // Mover el scroll para que la fila marcada esté visible
+    // Scroll to ensure the selected row is visible
     if (currentMode == Mode::SelectRow) {
         lv_obj_scroll_to_view(rowContainers[selectedRowIndex - visibleRowStart], LV_ANIM_ON);
     }
 }
 
+/**
+ * @brief Updates the visual selection (highlighting) of the keyboard.
+ * 
+ * This function highlights the currently selected row or character.
+ */
 void Keyboard::updateSelection() {
     for (int i = 0; i < visibleRowCount; i++) {
         int rowIndex = visibleRowStart + i;
@@ -187,34 +220,71 @@ void Keyboard::updateSelection() {
     }
 }
 
-void Keyboard::selectLetter() {
-    currentMode = Mode::SelectLetter;
-    selectedLetterIndex = 0;
-}
-
+/**
+ * @brief Switches to row selection mode.
+ * 
+ * This function changes the keyboard mode to row selection and resets the character selection.
+ */
 void Keyboard::selectRow() {
     currentMode = Mode::SelectRow;
     selectedLetterIndex = 0;
 }
 
+/**
+ * @brief Switches to character selection mode.
+ * 
+ * This function changes the keyboard mode to character selection and resets the character index.
+ */
+void Keyboard::selectLetter() {
+    currentMode = Mode::SelectLetter;
+    selectedLetterIndex = 0;
+}
+
+/**
+ * @brief Checks if the keyboard is in character selection mode.
+ * 
+ * @return true if in character selection mode, false otherwise.
+ */
 bool Keyboard::isSelectingLetter() const {
     return currentMode == Mode::SelectLetter;
 }
 
+/**
+ * @brief Checks if the keyboard is in row selection mode.
+ * 
+ * @return true if in row selection mode, false otherwise.
+ */
 bool Keyboard::isSelectingRow() const {
     return currentMode == Mode::SelectRow;
 }
 
+/**
+ * @brief Shows the keyboard.
+ * 
+ * This function makes the keyboard visible on the screen.
+ */
 void Keyboard::show() {
-    lv_obj_clear_flag(keyboardContainer, LV_OBJ_FLAG_HIDDEN); // Mostrar el teclado
-    Serial.println("Teclado mostrado.");
+    lv_obj_clear_flag(keyboardContainer, LV_OBJ_FLAG_HIDDEN);
+    Serial.println("Keyboard shown.");
 }
 
+/**
+ * @brief Hides the keyboard.
+ * 
+ * This function makes the keyboard invisible on the screen.
+ */
 void Keyboard::hide() {
-    lv_obj_add_flag(keyboardContainer, LV_OBJ_FLAG_HIDDEN); // Ocultar el teclado
-    Serial.println("Teclado ocultado.");
+    lv_obj_add_flag(keyboardContainer, LV_OBJ_FLAG_HIDDEN);
+    Serial.println("Keyboard hidden.");
 }
 
+/**
+ * @brief Sets the callback for letter selection.
+ * 
+ * This function sets a callback that is triggered when a letter is selected.
+ * 
+ * @param callback Callback function to handle letter selection.
+ */
 void Keyboard::setOnLetterSelectedCallback(std::function<void(std::string)> callback) {
     onLetterSelectedCallback = callback;
 }
