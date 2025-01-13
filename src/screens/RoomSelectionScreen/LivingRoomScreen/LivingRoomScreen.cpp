@@ -2,12 +2,6 @@
 #include "../../ScreenManager.h"
 
 // Declarar las imágenes de la animación bubblePop
-LV_IMG_DECLARE(bubblePop1);
-LV_IMG_DECLARE(bubblePop2);
-LV_IMG_DECLARE(bubblePop3);
-LV_IMG_DECLARE(bubblePop4);
-LV_IMG_DECLARE(bubblePop5);
-LV_IMG_DECLARE(bubblePop6);
 LV_IMG_DECLARE(bubblePop7);
 LV_IMG_DECLARE(bubblePop8);
 LV_IMG_DECLARE(bubblePop9);
@@ -39,12 +33,6 @@ void LivingRoomScreen::load() {
 
     // Crear el array de imágenes para la animación bubblePop
     static const lv_img_dsc_t* anim_imgs[12] = {
-        &bubblePop1,
-        &bubblePop2,
-        &bubblePop3,
-        &bubblePop4,
-        &bubblePop5,
-        &bubblePop6,
         &bubblePop7,
         &bubblePop8,
         &bubblePop9,
@@ -56,7 +44,7 @@ void LivingRoomScreen::load() {
     // Crear el objeto de animación de imágenes
     lv_obj_t* animimg = lv_animimg_create(lv_scr_act());
     lv_animimg_set_src(animimg, (const void**) anim_imgs, 12); // Cast a const void**
-    lv_animimg_set_duration(animimg, 1000); // Duración de la animación en milisegundos
+    lv_animimg_set_duration(animimg, 500); // Duración de la animación en milisegundos
     lv_animimg_set_repeat_count(animimg, 1); // Repetir solo una vez
     lv_obj_set_size(animimg, 32, 32); // Tamaño de la animación (32x32 px)
     lv_obj_set_pos(animimg, bubbleX, bubbleY); // Posicionar la animación en las coordenadas de la burbuja
