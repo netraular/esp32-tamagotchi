@@ -157,8 +157,4 @@ void RoomSelectionScreen::updateRoomDisplay() {
     } else {
         lv_obj_add_flag(arrowRight, LV_OBJ_FLAG_HIDDEN); // Ocultar flecha derecha
     }
-
-    // Obtener la posición actual de la burbuja
-    int bubbleX = lv_obj_get_x(bubbleImage);
-    int bubbleY = lv_obj_get_y(bubbleImage);
 }
