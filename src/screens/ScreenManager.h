@@ -22,6 +22,7 @@ public:
     void init(); // Initialize LVGL and the display
     void addScreen(const std::string& name, Screen* screen); // Register a screen
     void setScreen(const std::string& name); // Set the active screen
+    Screen* getScreen(const std::string& name); // Get a screen by name
     void update(); // Update the active screen and LVGL
     void handleButtons(); // Handle button state changes
 

@@ -193,3 +193,11 @@ void ScreenManager::my_disp_flush(lv_display_t *disp, const lv_area_t *area, uin
     // Notify LVGL that the flush operation is complete
     lv_display_flush_ready(disp);
 }
+
+Screen* ScreenManager::getScreen(const std::string& name) {
+    auto it = screens.find(name);
+    if (it != screens.end()) {
+        return it->second; // Devuelve el puntero a la pantalla si se encuentra
+    }
+    return nullptr; // Devuelve nullptr si la pantalla no existe
+}

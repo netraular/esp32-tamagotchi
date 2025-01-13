@@ -11,6 +11,10 @@ public:
     void update() override;
     void handleButtonEvent(const ButtonState& state, const ButtonChange& change) override;
 
+    // Función para obtener la posición actual de la burbuja
+    int getBubbleX() const { return lv_obj_get_x(bubbleImage); }
+    int getBubbleY() const { return lv_obj_get_y(bubbleImage); }
+
 private:
     std::vector<const char*> roomNames; // Nombres de las habitaciones
     std::vector<const lv_img_dsc_t*> roomImages; // Imágenes de fondo de las habitaciones
@@ -24,13 +28,8 @@ private:
     lv_anim_t animRight; // Animación para la flecha derecha
     lv_anim_t animBubbleX; // Animación horizontal para la burbuja
     lv_anim_t animBubbleY; // Animación vertical para la burbuja
-    int bubbleX = 0; // Posición horizontal actual de la burbuja
-    int bubbleY = 10; // Posición vertical actual de la burbuja
 
     void updateRoomDisplay(); // Actualiza la imagen de fondo, el nombre de la habitación y las flechas
-    static void animateArrow(lv_obj_t* obj, int32_t start, int32_t end); // Función de animación
-    static void animateBubbleX(lv_obj_t* obj, int32_t start, int32_t end); // Función de animación horizontal para la burbuja
-    static void animateBubbleY(lv_obj_t* obj, int32_t start, int32_t end); // Función de animación vertical para la burbuja
 };
 
 #endif

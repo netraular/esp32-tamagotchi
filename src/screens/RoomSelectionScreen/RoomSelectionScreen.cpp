@@ -1,4 +1,5 @@
 #include "RoomSelectionScreen.h"
+#include "../RoomSelectionScreen/LivingRoomScreen/LivingRoomScreen.h"
 #include "../ScreenManager.h"
 
 extern const lv_img_dsc_t background1;
@@ -94,6 +95,7 @@ void RoomSelectionScreen::load() {
 
 void RoomSelectionScreen::update() {
     // No es necesario actualizar nada en esta pantalla
+    updateRoomDisplay();
 }
 
 void RoomSelectionScreen::handleButtonEvent(const ButtonState& state, const ButtonChange& change) {
@@ -118,6 +120,18 @@ void RoomSelectionScreen::handleButtonEvent(const ButtonState& state, const Butt
             // Si se selecciona "Outside", volver a la pantalla principal
             screenManager.setScreen("MainMenu");
         } else {
+            // Obtener las coordenadas actuales de la burbuja
+            int bubbleX = getBubbleX();
+            int bubbleY = getBubbleY();
+
+            // Pasar las coordenadas a LivingRoomScreen
+            if (strcmp(selectedRoom, "LivingRoom") == 0) {
+                LivingRoomScreen* livingRoomScreen = (LivingRoomScreen*)screenManager.getScreen("LivingRoom");
+                if (livingRoomScreen) {
+                    livingRoomScreen->setBubblePosition(bubbleX, bubbleY);
+                }
+            }
+
             // Cargar la pantalla de la habitación seleccionada
             screenManager.setScreen(selectedRoom);
         }
@@ -143,4 +157,8 @@ void RoomSelectionScreen::updateRoomDisplay() {
     } else {
         lv_obj_add_flag(arrowRight, LV_OBJ_FLAG_HIDDEN); // Ocultar flecha derecha
     }
+
+    // Obtener la posición actual de la burbuja
+    int bubbleX = lv_obj_get_x(bubbleImage);
+    int bubbleY = lv_obj_get_y(bubbleImage);
 }
