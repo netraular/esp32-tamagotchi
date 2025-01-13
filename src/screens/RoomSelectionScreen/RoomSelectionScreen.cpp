@@ -9,6 +9,7 @@ extern const lv_img_dsc_t background5;
 extern const lv_img_dsc_t background6;
 extern const lv_img_dsc_t ArrowLeft;
 extern const lv_img_dsc_t ArrowRight;
+extern const lv_img_dsc_t bubble; // Imagen "bubble"
 
 extern ScreenManager screenManager;
 
@@ -40,6 +41,12 @@ void RoomSelectionScreen::load() {
     lv_obj_set_size(arrowRight, 16, 16); // Tamaño de la flecha
     lv_obj_align(arrowRight, LV_ALIGN_RIGHT_MID, -10, 0); // Alinear a la derecha
 
+    // Crear la imagen "bubble" y posicionarla correctamente
+    bubbleImage = lv_img_create(lv_scr_act());
+    lv_img_set_src(bubbleImage, &bubble);
+    lv_obj_set_size(bubbleImage, 32, 32); // Tamaño de la imagen
+    lv_obj_align(bubbleImage, LV_ALIGN_TOP_MID, 0, 10); // Alinear en la parte superior central
+
     // Configurar animaciones para las flechas
     lv_anim_init(&animLeft);
     lv_anim_set_var(&animLeft, arrowLeft);
@@ -58,6 +65,26 @@ void RoomSelectionScreen::load() {
     lv_anim_set_playback_time(&animRight, 500); // Tiempo de vuelta a la posición original
     lv_anim_set_repeat_count(&animRight, LV_ANIM_REPEAT_INFINITE); // Repetir infinitamente
     lv_anim_start(&animRight);
+
+    // Configurar animación horizontal para la burbuja
+    lv_anim_init(&animBubbleX);
+    lv_anim_set_var(&animBubbleX, bubbleImage);
+    lv_anim_set_exec_cb(&animBubbleX, (lv_anim_exec_xcb_t)lv_obj_set_x);
+    lv_anim_set_values(&animBubbleX, -20, 20); // Mover la burbuja de izquierda a derecha dentro de la pantalla
+    lv_anim_set_time(&animBubbleX, 4000); // Duración de 4000 ms (más lento)
+    lv_anim_set_playback_time(&animBubbleX, 4000); // Tiempo de vuelta a la posición original
+    lv_anim_set_repeat_count(&animBubbleX, LV_ANIM_REPEAT_INFINITE); // Repetir infinitamente
+    lv_anim_start(&animBubbleX);
+
+    // Configurar animación vertical para la burbuja
+    lv_anim_init(&animBubbleY);
+    lv_anim_set_var(&animBubbleY, bubbleImage);
+    lv_anim_set_exec_cb(&animBubbleY, (lv_anim_exec_xcb_t)lv_obj_set_y);
+    lv_anim_set_values(&animBubbleY, 5, 20); // Mover la burbuja hacia arriba y abajo
+    lv_anim_set_time(&animBubbleY, 3000); // Duración de 3000 ms (más lento)
+    lv_anim_set_playback_time(&animBubbleY, 3000); // Tiempo de vuelta a la posición original
+    lv_anim_set_repeat_count(&animBubbleY, LV_ANIM_REPEAT_INFINITE); // Repetir infinitamente
+    lv_anim_start(&animBubbleY);
 
     // Actualizar la visualización inicial
     updateRoomDisplay();
@@ -87,7 +114,13 @@ void RoomSelectionScreen::handleButtonEvent(const ButtonState& state, const Butt
     // Seleccionar la habitación con el botón 2
     if (change.button2Changed && state.button2Pressed) {
         const char* selectedRoom = roomNames[selectedRoomIndex];
-        screenManager.setScreen(selectedRoom); // Cargar la pantalla correspondiente
+        if (strcmp(selectedRoom, "Outside") == 0) {
+            // Si se selecciona "Outside", volver a la pantalla principal
+            screenManager.setScreen("MainMenu");
+        } else {
+            // Cargar la pantalla de la habitación seleccionada
+            screenManager.setScreen(selectedRoom);
+        }
     }
 }
 

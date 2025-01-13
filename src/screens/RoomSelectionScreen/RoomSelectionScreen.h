@@ -1,7 +1,7 @@
 #ifndef ROOMSELECTIONSCREEN_H
 #define ROOMSELECTIONSCREEN_H
 
-#include "../Screen.h"
+#include "screens/Screen.h"
 #include <vector>
 #include <lvgl.h>
 
@@ -19,11 +19,18 @@ private:
     lv_obj_t* roomLabel; // Etiqueta para mostrar el nombre de la habitación
     lv_obj_t* arrowLeft; // Flecha izquierda
     lv_obj_t* arrowRight; // Flecha derecha
+    lv_obj_t* bubbleImage; // Imagen "bubble" en la esquina superior derecha
     lv_anim_t animLeft; // Animación para la flecha izquierda
     lv_anim_t animRight; // Animación para la flecha derecha
+    lv_anim_t animBubbleX; // Animación horizontal para la burbuja
+    lv_anim_t animBubbleY; // Animación vertical para la burbuja
+    int bubbleX = 0; // Posición horizontal actual de la burbuja
+    int bubbleY = 10; // Posición vertical actual de la burbuja
 
     void updateRoomDisplay(); // Actualiza la imagen de fondo, el nombre de la habitación y las flechas
     static void animateArrow(lv_obj_t* obj, int32_t start, int32_t end); // Función de animación
+    static void animateBubbleX(lv_obj_t* obj, int32_t start, int32_t end); // Función de animación horizontal para la burbuja
+    static void animateBubbleY(lv_obj_t* obj, int32_t start, int32_t end); // Función de animación vertical para la burbuja
 };
 
 #endif
