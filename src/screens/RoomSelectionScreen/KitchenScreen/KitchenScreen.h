@@ -11,8 +11,9 @@ public:
     void handleButtonEvent(const ButtonState& state, const ButtonChange& change) override;
 
 private:
-    lv_obj_t* backgroundImage;
-    lv_obj_t* roomLabel;
+    lv_obj_t* backgroundImage; // Imagen de fondo
+    lv_obj_t* roomLabel;       // Etiqueta de la habitación
+    lv_obj_t* animimg;         // Objeto de animación de imágenes
 };
 
 #endif
