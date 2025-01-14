@@ -81,6 +81,11 @@ void setup() {
     Serial.begin(115200);
     Serial.println("Initializing system...");
     
+  uint32_t flash_size = ESP.getFlashChipSize();
+  Serial.print("Tamaño total de la memoria flash: ");
+  Serial.print(flash_size / (1024 * 1024));
+  Serial.println(" MB");
+    
     // Initialize LittleFS and create initial files
     if (!persistentDataManager.init()) {
         Serial.println("Failed to initialize LittleFS. Attempting to format...");
