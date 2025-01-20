@@ -13,6 +13,7 @@ struct ButtonState {
     bool button1Pressed; // State of button 1 (true if pressed)
     bool button2Pressed; // State of button 2 (true if pressed)
     bool button3Pressed; // State of button 3 (true if pressed)
+    bool button4Pressed; // State of button 4 (true if pressed)
 };
 
 /**
@@ -25,6 +26,7 @@ struct ButtonChange {
     bool button1Changed; // True if button 1's state has changed
     bool button2Changed; // True if button 2's state has changed
     bool button3Changed; // True if button 3's state has changed
+    bool button4Changed; // True if button 4's state has changed
 };
 
 /**

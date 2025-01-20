@@ -6,6 +6,7 @@
 #define BUTTON1_PIN 27
 #define BUTTON2_PIN 26
 #define BUTTON3_PIN 25
+#define BUTTON4_PIN 33
 
 // Tiempo de debounce para los botones (en milisegundos)
 const unsigned long DEBOUNCE_DELAY = 50;

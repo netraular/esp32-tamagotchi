@@ -41,7 +41,7 @@ private:
     };
 
     // Array to store the state of all buttons
-    Button buttons[3];
+    Button buttons[4];
 
     void lvgl_init(); // Initialize LVGL
     static void my_disp_flush(lv_display_t *disp, const lv_area_t *area, uint8_t *px_map); // LVGL display flush callback

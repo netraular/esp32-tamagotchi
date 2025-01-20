@@ -27,6 +27,12 @@ ScreenManager::ScreenManager(TFT_eSPI& tft) : tft(tft), currentScreen(nullptr) {
     buttons[2].pressed = false;
     buttons[2].released = true;
     buttons[2].lastDebounceTime = 0;
+
+    buttons[3].pin = BUTTON4_PIN;
+    buttons[3].state = HIGH;
+    buttons[3].pressed = false;
+    buttons[3].released = true;
+    buttons[3].lastDebounceTime = 0;
 }
 
 /**
@@ -95,18 +101,20 @@ void ScreenManager::handleButtons() {
     ButtonState currentState = {
         digitalRead(BUTTON1_PIN) == LOW,
         digitalRead(BUTTON2_PIN) == LOW,
-        digitalRead(BUTTON3_PIN) == LOW
+        digitalRead(BUTTON3_PIN) == LOW,
+        digitalRead(BUTTON4_PIN) == LOW
     };
 
     // Detect changes in the button states
     ButtonChange change = {
         currentState.button1Pressed != previousState.button1Pressed,
         currentState.button2Pressed != previousState.button2Pressed,
-        currentState.button3Pressed != previousState.button3Pressed
+        currentState.button3Pressed != previousState.button3Pressed,
+        currentState.button4Pressed != previousState.button4Pressed
     };
 
     // Notify the active screen if any button state has changed
-    if (change.button1Changed || change.button2Changed || change.button3Changed) {
+    if (change.button1Changed || change.button2Changed || change.button3Changed || change.button4Changed) {
         if (currentScreen != nullptr) {
             currentScreen->handleButtonEvent(currentState, change);
         }

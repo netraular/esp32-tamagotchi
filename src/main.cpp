@@ -110,6 +110,7 @@ void setup() {
     pinMode(BUTTON1_PIN, INPUT_PULLUP); // Use internal pull-up resistor
     pinMode(BUTTON2_PIN, INPUT_PULLUP); // Use internal pull-up resistor
     pinMode(BUTTON3_PIN, INPUT_PULLUP); // Use internal pull-up resistor
+    pinMode(BUTTON4_PIN, INPUT_PULLUP); // Use internal pull-up resistor
 
     // Register screens with ScreenManager
     screenManager.addScreen("LoadScreen", &loadScreen); // Register LoadScreen
