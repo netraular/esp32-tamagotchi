@@ -110,19 +110,12 @@ void LoadScreen::update() {
 }
 
 void LoadScreen::handleButtonEvent(const ButtonState& state, const ButtonChange& change) {
-    // Si se presiona el botón 1, guardar la hora actual en settings.json
     if (change.button1Changed && state.button1Pressed) {
         saveCurrentTime();
     }
 
-    // Si se presiona el botón 2, ir a PetScreen
-    if (change.button2Changed && state.button2Pressed) {
-        screenManager.setScreen("RoomSelectionScreen");
-    }
-
-    // Si se presiona el botón 3, ir a MainMenu
     if (change.button3Changed && state.button3Pressed) {
-        screenManager.setScreen("MainMenu");
+        screenManager.setScreen("RoomSelectionScreen");
     }
 }
 

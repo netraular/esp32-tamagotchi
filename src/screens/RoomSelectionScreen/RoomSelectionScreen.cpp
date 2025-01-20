@@ -99,22 +99,22 @@ void RoomSelectionScreen::update() {
 }
 
 void RoomSelectionScreen::handleButtonEvent(const ButtonState& state, const ButtonChange& change) {
-    // Navegar entre las habitaciones con el botón 1 (anterior) y el botón 3 (siguiente)
+    // Navegar entre las habitaciones con el botón 1 (anterior) y el botón 4 (siguiente)
     if (change.button1Changed && state.button1Pressed) {
         if (selectedRoomIndex > 0) { // Si hay una habitación a la izquierda
             selectedRoomIndex--; // Mover a la habitación anterior
             updateRoomDisplay();
         }
     }
-    if (change.button3Changed && state.button3Pressed) {
+    if (change.button4Changed && state.button4Pressed) {
         if (selectedRoomIndex < roomNames.size() - 1) { // Si hay una habitación a la derecha
             selectedRoomIndex++; // Mover a la siguiente habitación
             updateRoomDisplay();
         }
     }
 
-    // Seleccionar la habitación con el botón 2
-    if (change.button2Changed && state.button2Pressed) {
+    // Seleccionar la habitación con el botón 3
+    if (change.button3Changed && state.button3Pressed) {
         const char* selectedRoom = roomNames[selectedRoomIndex];
         if (strcmp(selectedRoom, "Outside") == 0) {
             // Si se selecciona "Outside", volver a la pantalla principal
@@ -136,7 +136,13 @@ void RoomSelectionScreen::handleButtonEvent(const ButtonState& state, const Butt
             screenManager.setScreen(selectedRoom);
         }
     }
+
+    // Navegar a LoadScreen con el botón 2
+    if (change.button2Changed && state.button2Pressed) {
+        screenManager.setScreen("LoadScreen");
+    }
 }
+
 
 void RoomSelectionScreen::updateRoomDisplay() {
     // Actualizar la imagen de fondo
