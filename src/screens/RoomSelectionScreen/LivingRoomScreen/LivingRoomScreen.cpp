@@ -55,10 +55,10 @@ void LivingRoomScreen::load() {
     lv_animimg_start(animimg); // Iniciar la animación
 
     // Eliminar la imagen de la burbuja si existe
-    if (bubbleImage) {
-        lv_obj_del(bubbleImage); // Eliminar el objeto de la imagen de la burbuja
-        bubbleImage = nullptr;   // Establecer el puntero a nullptr
-    }
+    // if (bubbleImage) {
+    //     lv_obj_del(bubbleImage); // Eliminar el objeto de la imagen de la burbuja
+    //     bubbleImage = nullptr;   // Establecer el puntero a nullptr
+    // }
 
     Serial.println("LivingRoomScreen cargada.");
 }
