@@ -19,10 +19,18 @@ void BedroomScreen::load() {
     lv_obj_align(roomLabel, LV_ALIGN_CENTER, 0, 0);
 
     // Cargar y mostrar la imagen de animación
-    animationImage = lv_img_create(lv_scr_act());
-    lv_img_set_src(animationImage, &DefaultAnimationSpriteSheet);
-    lv_obj_set_size(animationImage, 64, 64); // Ajustar el tamaño según sea necesario
-    lv_obj_align(animationImage, LV_ALIGN_CENTER, 0, 30); // Posicionar la imagen
+    lv_obj_t * img;
+
+    img = lv_img_create(lv_scr_act());
+    /* Assuming a File system is attached to letter 'A'
+     * E.g. set LV_USE_FS_STDIO 'A' in lv_conf.h */
+    // Serial.println("ola");
+    // lv_image_set_src(img, "L:/animations/spritesheet_snorlax.png");
+    // lv_obj_align(img, LV_ALIGN_RIGHT_MID, -20, 0);
+    
+    // animationImage = lv_img_create(lv_scr_act());
+    // lv_img_set_src(animationImage, "A:/animations/spritesheet_snorlax.png");
+    // lv_obj_align(animationImage, LV_ALIGN_CENTER, 0, 30);
 
     Serial.println("BedroomScreen cargada.");
 }
