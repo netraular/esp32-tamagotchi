@@ -18,19 +18,34 @@ void BedroomScreen::load() {
     lv_obj_set_style_text_font(roomLabel, &lv_font_montserrat_16, 0);
     lv_obj_align(roomLabel, LV_ALIGN_CENTER, 0, 0);
 
+    if (!LittleFS.exists("/animations/spritesheet_snorlax.png")) {
+        Serial.println("¡Archivo PNG no encontrado!");
+        return;
+    }else{
+        Serial.println("¡Archivo PNG Encontrado!");
+    }
     // Cargar y mostrar la imagen de animación
-    lv_obj_t * img;
+    animationImage = lv_img_create(lv_scr_act());
+    lv_img_set_src(animationImage, "L:/animations/spritesheet_snorlax.png");
+    lv_obj_align(animationImage, LV_ALIGN_CENTER, 0, 30);
 
-    img = lv_img_create(lv_scr_act());
-    /* Assuming a File system is attached to letter 'A'
-     * E.g. set LV_USE_FS_STDIO 'A' in lv_conf.h */
-    // Serial.println("ola");
-    // lv_image_set_src(img, "L:/animations/spritesheet_snorlax.png");
-    // lv_obj_align(img, LV_ALIGN_RIGHT_MID, -20, 0);
-    
-    // animationImage = lv_img_create(lv_scr_act());
-    // lv_img_set_src(animationImage, "A:/animations/spritesheet_snorlax.png");
-    // lv_obj_align(animationImage, LV_ALIGN_CENTER, 0, 30);
+    // lv_fs_file_t f;
+    // lv_fs_res_t res = lv_fs_open(&f, "L:/test.txt", LV_FS_MODE_RD);
+    // if (res == LV_FS_RES_OK) {
+    //     char buffer[256];
+    //     uint32_t bytes_read;
+    //     res = lv_fs_read(&f, buffer, sizeof(buffer) - 1, &bytes_read);
+    //     if (res == LV_FS_RES_OK) {
+    //         buffer[bytes_read] = '\0'; // Asegurar terminación nula
+    //         Serial.print("Contenido de test.txt: ");
+    //         Serial.println(buffer);
+    //     } else {
+    //         Serial.println("Error al leer el archivo");
+    //     }
+    //     lv_fs_close(&f);
+    // } else {
+    //     Serial.println("Error al abrir test.txt");
+    // }
 
     Serial.println("BedroomScreen cargada.");
 }

@@ -31,6 +31,8 @@
 #include "screens/RoomSelectionScreen/LivingRoomScreen/LivingRoomScreen.h"
 #include "screens/RoomSelectionScreen/GardenScreen/GardenScreen.h"
 #include "screens/RoomSelectionScreen/OutsideScreen/OutsideScreen.h"
+#include <LittleFS.h>
+#include <lvgl.h>
 
 // Global objects
 TFT_eSPI tft;
@@ -67,6 +69,49 @@ OutsideScreen outsideScreen;
 // Frame interval for 30 FPS (in milliseconds)
 const uint32_t FRAME_INTERVAL = 1000 / 30;
 
+// LVGL file system callbacks
+static void* lvgl_fs_open(lv_fs_drv_t* drv, const char* path, lv_fs_mode_t mode) {
+    const char* mode_str = "";
+    if (mode == LV_FS_MODE_RD) mode_str = "r";
+    else if (mode == LV_FS_MODE_WR) mode_str = "w";
+    else if (mode == (LV_FS_MODE_WR | LV_FS_MODE_RD)) mode_str = "w+";
+
+    fs::File* file = new fs::File(LittleFS.open(path, mode_str));
+    return (*file) ? (void*)file : nullptr;
+}
+
+static lv_fs_res_t lvgl_fs_close(lv_fs_drv_t* drv, void* file_p) {
+    fs::File* file = (fs::File*)file_p;
+    if (file) {
+        file->close();
+        delete file;
+    }
+    return LV_FS_RES_OK;
+}
+
+static lv_fs_res_t lvgl_fs_read(lv_fs_drv_t* drv, void* file_p, void* buf, uint32_t btr, uint32_t* br) {
+    fs::File* file = (fs::File*)file_p;
+    *br = file->readBytes((char*)buf, btr);
+    return LV_FS_RES_OK;
+}
+
+static lv_fs_res_t lvgl_fs_seek(lv_fs_drv_t* drv, void* file_p, uint32_t pos, lv_fs_whence_t whence) {
+    fs::File* file = (fs::File*)file_p;
+    switch(whence) {
+        case LV_FS_SEEK_SET: file->seek(pos); break;
+        case LV_FS_SEEK_CUR: file->seek(file->position() + pos); break;
+        case LV_FS_SEEK_END: file->seek(file->size() + pos); break;
+        default: return LV_FS_RES_INV_PARAM;
+    }
+    return LV_FS_RES_OK;
+}
+
+static lv_fs_res_t lvgl_fs_tell(lv_fs_drv_t* drv, void* file_p, uint32_t* pos_p) {
+    fs::File* file = (fs::File*)file_p;
+    *pos_p = file->position();
+    return LV_FS_RES_OK;
+}
+
 /**
  * @brief Initializes the system, including LittleFS, input pins, screens, clock, and LVGL.
  * 
@@ -81,11 +126,6 @@ void setup() {
     Serial.begin(115200);
     Serial.println("Initializing system...");
     
-  uint32_t flash_size = ESP.getFlashChipSize();
-  Serial.print("Tamaño total de la memoria flash: ");
-  Serial.print(flash_size / (1024 * 1024));
-  Serial.println(" MB");
-    
     // Initialize LittleFS and create initial files
     if (!persistentDataManager.init()) {
         Serial.println("Failed to initialize LittleFS. Attempting to format...");
@@ -98,6 +138,21 @@ void setup() {
             return;
         }
     }
+
+    // Registrar el driver de archivos LVGL con LittleFS
+    Serial.println("Registrar el driver de archivos LVGL con LittleFS.");
+    lv_init(); // Asegurar que LVGL está inicializado
+    static lv_fs_drv_t fs_drv;
+    lv_fs_drv_init(&fs_drv);
+    fs_drv.letter = 'L';
+    fs_drv.cache_size = 1024;
+    fs_drv.open_cb = lvgl_fs_open;
+    fs_drv.close_cb = lvgl_fs_close;
+    fs_drv.read_cb = lvgl_fs_read;
+    fs_drv.seek_cb = lvgl_fs_seek;
+    fs_drv.tell_cb = lvgl_fs_tell;
+    lv_fs_drv_register(&fs_drv);
+    Serial.println("EXITO al registrar el driver de archivos LVGL con LittleFS.");
 
     // Create initial files if they don't exist
     if (!persistentDataManager.createInitialFiles()) {
