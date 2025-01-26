@@ -54,6 +54,7 @@ public:
     virtual void load() = 0; // Load the screen (initialize UI elements)
     virtual void update() = 0; // Update the screen (refresh UI elements)
     virtual void handleButtonEvent(const ButtonState& state, const ButtonChange& change) = 0; // Handle button events
+    virtual void unload() {} // Método para liberar recursos
 };
 
 #endif
