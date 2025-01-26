@@ -116,7 +116,7 @@ void ClockManager::update() {
 void ClockManager::setupTime() {
     // Configure NTP servers
     configTime(0, 0, "pool.ntp.org", "time.nist.gov");
-    setenv("TZ", "CET-1CEST,M3.5.0,M10.5.0/3", 1); // Set timezone (example: Central European Time)
+    setenv("TZ", "UTC0", 1); // UTC+0 de manera fija
     tzset();
 }
 
