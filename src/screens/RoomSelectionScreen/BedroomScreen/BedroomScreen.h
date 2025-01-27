@@ -59,12 +59,12 @@ public:
 private:
     lv_obj_t* backgroundImage = nullptr;
     lv_obj_t* roomLabel = nullptr;
-    lv_obj_t* animationImage = nullptr;  // Único objeto de imagen
-    
+lv_obj_t* animationImages[20] = {nullptr};  // Array para 20 imágenes    
     bool useEmbeddedSprites = true;
     int currentFrame = 0;
     int currentSpriteIndex = 0;
-    
+    int numSprites = 2;  // Nueva variable para controlar el número de sprites
+
     // Arrays para manejar ambos modos (40 sprites)
     const char* pngPaths[40] = {
         "L:/animations/snorlaxEdited/sprite1.png",

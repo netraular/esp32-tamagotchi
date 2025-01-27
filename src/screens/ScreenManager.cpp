@@ -67,6 +67,7 @@ void ScreenManager::setScreen(const std::string& name) {
     if (screens.find(name) != screens.end()) {
         if (currentScreen != nullptr) {
             // Clear the current screen if necessary
+            currentScreen->unload();  // Liberar recursos de la pantalla actual
             lv_obj_clean(lv_scr_act());
         }
         currentScreen = screens[name];

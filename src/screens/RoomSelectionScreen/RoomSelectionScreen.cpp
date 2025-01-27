@@ -44,8 +44,8 @@ void RoomSelectionScreen::load() {
 
     // Crear la imagen "bubble" y posicionarla correctamente
     bubbleImage = lv_img_create(lv_scr_act());
-    lv_img_set_src(bubbleImage, "L:/animations/bubble.png");
-    // lv_img_set_src(bubbleImage, &bubble);
+    // lv_img_set_src(bubbleImage, "L:/animations/bubble_1.png");
+    lv_img_set_src(bubbleImage, &bubble);
     lv_obj_set_size(bubbleImage, 32, 32); // Tamaño de la imagen
     lv_obj_align(bubbleImage, LV_ALIGN_TOP_MID, 0, 10); // Alinear en la parte superior central
 
