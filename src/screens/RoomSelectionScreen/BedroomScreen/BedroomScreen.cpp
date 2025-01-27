@@ -77,7 +77,7 @@ void BedroomScreen::load() {
 void BedroomScreen::update() {
     currentFrame++;
     
-    if (currentFrame >= 5) {  // Cambio cada 5 frames
+    if (currentFrame >= 2) {  // Cambio cada 5 frames
         currentFrame = 0;
         currentSpriteIndex = (currentSpriteIndex + 1) % numSprites; // Usar numSprites
         updateSprite();
@@ -85,7 +85,7 @@ void BedroomScreen::update() {
 }
 
 void BedroomScreen::updateSprite() {
-    for(int i = 0; i < 20; i++) {
+    for(int i = 0; i < 1; i++) {
         if(useEmbeddedSprites) {
             lv_img_set_src(animationImages[i], embeddedSprites[currentSpriteIndex]);
         } else {
