@@ -147,7 +147,7 @@ void LoadScreen::loadRandomBackground() {
     // Crear la imagen de fondo
     backgroundImage = lv_img_create(lv_scr_act());
     lv_img_set_src(backgroundImage, selectedBackground);
-    lv_obj_set_size(backgroundImage, 128, 160); // Tamaño de la imagen
+    lv_obj_set_size(backgroundImage, 240,280); // Tamaño de la imagen
     lv_obj_align(backgroundImage, LV_ALIGN_CENTER, 0, 0); // Centrar la imagen en la pantalla
     lv_obj_move_background(backgroundImage); // Mover la imagen al fondo
 }

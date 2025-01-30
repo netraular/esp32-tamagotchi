@@ -6,7 +6,7 @@ extern ScreenManager screenManager;
 void MainMenu::load() {
     // Crear una lista de LVGL
     list = lv_list_create(lv_scr_act());
-    lv_obj_set_size(list, 160, 128); // Ajustar al tamaño de la pantalla
+    lv_obj_set_size(list, 280, 240); // Ajustar al tamaño de la pantalla
     lv_obj_align(list, LV_ALIGN_CENTER, 0, 0);
 
     // Añadir opciones al menú

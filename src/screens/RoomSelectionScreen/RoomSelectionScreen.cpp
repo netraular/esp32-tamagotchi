@@ -22,7 +22,7 @@ void RoomSelectionScreen::load() {
     // Crear la imagen de fondo
     backgroundImage = lv_img_create(lv_scr_act());
     lv_img_set_src(backgroundImage, roomImages[selectedRoomIndex]);
-    lv_obj_set_size(backgroundImage, 128, 160); // Ajustar al tamaño de la pantalla
+    lv_obj_set_size(backgroundImage, 240, 280); // Ajustar al tamaño de la pantalla
     lv_obj_align(backgroundImage, LV_ALIGN_CENTER, 0, 0);
 
     // Crear una etiqueta para mostrar el nombre de la habitación

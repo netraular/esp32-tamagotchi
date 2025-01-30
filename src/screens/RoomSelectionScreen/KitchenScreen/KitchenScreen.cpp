@@ -28,7 +28,7 @@ void KitchenScreen::load() {
     // Cargar la imagen de fondo
     backgroundImage = lv_img_create(lv_scr_act());
     lv_img_set_src(backgroundImage, &background3);
-    lv_obj_set_size(backgroundImage, 128, 160);
+    lv_obj_set_size(backgroundImage, 240,280);
     lv_obj_align(backgroundImage, LV_ALIGN_CENTER, 0, 0);
 
     // Crear la etiqueta de la habitación
