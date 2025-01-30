@@ -1,56 +1,11 @@
 #include "BedroomScreen.h"
-#include "../../ScreenManager.h"
 
-// Definir los sprites embebidos (de sprite1 a sprite40)
-extern const lv_img_dsc_t sprite1;
-extern const lv_img_dsc_t sprite2;
-extern const lv_img_dsc_t sprite3;
-extern const lv_img_dsc_t sprite4;
-extern const lv_img_dsc_t sprite5;
-extern const lv_img_dsc_t sprite6;
-extern const lv_img_dsc_t sprite7;
-extern const lv_img_dsc_t sprite8;
-extern const lv_img_dsc_t sprite9;
-extern const lv_img_dsc_t sprite10;
-extern const lv_img_dsc_t sprite11;
-extern const lv_img_dsc_t sprite12;
-extern const lv_img_dsc_t sprite13;
-extern const lv_img_dsc_t sprite14;
-extern const lv_img_dsc_t sprite15;
-extern const lv_img_dsc_t sprite16;
-extern const lv_img_dsc_t sprite17;
-extern const lv_img_dsc_t sprite18;
-extern const lv_img_dsc_t sprite19;
-extern const lv_img_dsc_t sprite20;
-extern const lv_img_dsc_t sprite21;
-extern const lv_img_dsc_t sprite22;
-extern const lv_img_dsc_t sprite23;
-extern const lv_img_dsc_t sprite24;
-extern const lv_img_dsc_t sprite25;
-extern const lv_img_dsc_t sprite26;
-extern const lv_img_dsc_t sprite27;
-extern const lv_img_dsc_t sprite28;
-extern const lv_img_dsc_t sprite29;
-extern const lv_img_dsc_t sprite30;
-extern const lv_img_dsc_t sprite31;
-extern const lv_img_dsc_t sprite32;
-extern const lv_img_dsc_t sprite33;
-extern const lv_img_dsc_t sprite34;
-extern const lv_img_dsc_t sprite35;
-extern const lv_img_dsc_t sprite36;
-extern const lv_img_dsc_t sprite37;
-extern const lv_img_dsc_t sprite38;
-extern const lv_img_dsc_t sprite39;
-extern const lv_img_dsc_t sprite40;
-
-extern const lv_img_dsc_t background1;
-extern ScreenManager screenManager;
 
 void BedroomScreen::load() {
     // Fondo y label
     backgroundImage = lv_img_create(lv_scr_act());
     lv_img_set_src(backgroundImage, &background1);
-    lv_obj_set_size(backgroundImage, 128, 160);
+    lv_obj_set_size(backgroundImage, 240,280);
     
     roomLabel = lv_label_create(lv_scr_act());
     lv_label_set_text(roomLabel, "x1 Stress Test 40-SPRITES");
@@ -85,11 +40,11 @@ void BedroomScreen::update() {
 }
 
 void BedroomScreen::updateSprite() {
-    for(int i = 0; i < 1; i++) {
+    for(int i = 0; i < 4; i++) {
         if(useEmbeddedSprites) {
-            lv_img_set_src(animationImages[i], embeddedSprites[currentSpriteIndex]);
+            lv_img_set_src(animationImages[i], embeddedSprites[currentSpriteIndex+(i%numSprites)]);
         } else {
-            lv_img_set_src(animationImages[i], pngPaths[currentSpriteIndex]);
+            lv_img_set_src(animationImages[i], pngPaths[currentSpriteIndex+(i%numSprites)]);
         }
     }
 }

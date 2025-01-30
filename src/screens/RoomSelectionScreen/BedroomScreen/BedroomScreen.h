@@ -4,6 +4,7 @@
 #include "screens/Screen.h"
 #include <lvgl.h>
 #include <LittleFS.h>
+#include "../../ScreenManager.h"
 
 // Declarar todos los sprites embebidos (de sprite1 a sprite40)
 extern const lv_img_dsc_t sprite1;
@@ -48,6 +49,7 @@ extern const lv_img_dsc_t sprite39;
 extern const lv_img_dsc_t sprite40;
 
 extern const lv_img_dsc_t background1;
+extern ScreenManager screenManager;
 
 class BedroomScreen : public Screen {
 public:
