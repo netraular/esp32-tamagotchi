@@ -107,18 +107,17 @@ void ScreenManager::handleButtons() {
     };
 
     // Detect changes in the button states
-    ButtonChange change = {
-        currentState.button1Pressed != previousState.button1Pressed,
-        currentState.button2Pressed != previousState.button2Pressed,
-        currentState.button3Pressed != previousState.button3Pressed,
-        currentState.button4Pressed != previousState.button4Pressed
-    };
-
-    // Notify the active screen if any button state has changed
-    if (change.button1Changed || change.button2Changed || change.button3Changed || change.button4Changed) {
-        if (currentScreen != nullptr) {
-            currentScreen->handleButtonEvent(currentState, change);
-        }
+    // Siempre notificar al screen actual, incluso si no hay cambios
+    if (currentScreen != nullptr) {
+        ButtonChange change = {
+            currentState.button1Pressed != previousState.button1Pressed,
+            currentState.button2Pressed != previousState.button2Pressed,
+            currentState.button3Pressed != previousState.button3Pressed,
+            currentState.button4Pressed != previousState.button4Pressed
+        };
+        
+        // Notificar en cada frame si algún botón está pulsado
+        currentScreen->handleButtonEvent(currentState, change);
     }
 
     // Update the previous state

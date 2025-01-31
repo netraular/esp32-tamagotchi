@@ -20,7 +20,8 @@ void MainMenu::load() {
         "SettingsScreen",
         "TestScreen",
         "TestScreen2",
-        "RoomSelectionScreen"
+        "RoomSelectionScreen",
+        "TileMapScreen"
     };
 
     for (const char* option : menuOptions) {

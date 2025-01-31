@@ -1,0 +1,79 @@
+{
+    "index": 0,
+    "name": "Walk",
+    "framewidth": 32,
+    "frameheight": 48,
+    "sprites": {
+        "1": {
+            "name": "down",
+            "mirrored": false,
+            "values": [
+                1,
+                2,
+                1,
+                3
+            ]
+        },
+        "2": {
+            "name": "down-right",
+            "mirrored": true,
+            "copy": "8"
+        },
+        "3": {
+            "name": "right",
+            "mirrored": true,
+            "copy": "7"
+        },
+        "4": {
+            "name": "up-right",
+            "mirrored": true,
+            "copy": "6"
+        },
+        "5": {
+            "name": "up",
+            "mirrored": false,
+            "values": [
+                13,
+                14,
+                13,
+                15
+            ]
+        },
+        "6": {
+            "name": "up-left",
+            "mirrored": false,
+            "values": [
+                10,
+                11,
+                10,
+                12
+            ]
+        },
+        "7": {
+            "name": "left",
+            "mirrored": false,
+            "values": [
+                7,
+                8,
+                7,
+                9
+            ]
+        },
+        "8": {
+            "name": "down-left",
+            "mirrored": false,
+            "values": [
+                4,
+                5,
+                4,
+                6
+            ]
+        }
+    },
+    "durations": [
+        8,
+        10,
+        8,
+        10
+    ]
+}

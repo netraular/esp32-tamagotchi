@@ -31,6 +31,8 @@
 #include "screens/RoomSelectionScreen/LivingRoomScreen/LivingRoomScreen.h"
 #include "screens/RoomSelectionScreen/GardenScreen/GardenScreen.h"
 #include "screens/RoomSelectionScreen/OutsideScreen/OutsideScreen.h"
+#include "screens/TileMapScreen/TileMapScreen.h"
+
 #include <LittleFS.h>
 #include <lvgl.h>
 
@@ -65,6 +67,7 @@ KitchenScreen kitchenScreen;
 LivingRoomScreen livingRoomScreen;
 GardenScreen gardenScreen;
 OutsideScreen outsideScreen;
+TileMapScreen tileMapScreen;
 
 // Frame interval for 30 FPS (in milliseconds)
 const uint32_t FRAME_INTERVAL = 1000 / 30;
@@ -195,6 +198,8 @@ void setup() {
     screenManager.addScreen("LivingRoom", &livingRoomScreen);
     screenManager.addScreen("Garden", &gardenScreen);
     screenManager.addScreen("Outside", &outsideScreen);
+    screenManager.addScreen("TileMapScreen", &tileMapScreen);
+    
 
     // Initialize the system clock
     ClockManager::getInstance().begin();

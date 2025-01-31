@@ -1,12 +1,12 @@
 #include "GardenScreen.h"
 #include "../../ScreenManager.h"
 
-extern const lv_img_dsc_t background5; // Imagen de fondo correspondiente
+extern const lv_img_dsc_t background1; // Imagen de fondo correspondiente
 extern ScreenManager screenManager;
 
 void GardenScreen::load() {
     backgroundImage = lv_img_create(lv_scr_act());
-    lv_img_set_src(backgroundImage, &background5);
+    lv_img_set_src(backgroundImage, &background1);
     lv_obj_set_size(backgroundImage, 240,280);
     lv_obj_align(backgroundImage, LV_ALIGN_CENTER, 0, 0);
 

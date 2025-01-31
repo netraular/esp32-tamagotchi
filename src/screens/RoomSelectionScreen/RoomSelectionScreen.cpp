@@ -3,11 +3,6 @@
 #include "../ScreenManager.h"
 
 extern const lv_img_dsc_t background1;
-extern const lv_img_dsc_t background2;
-extern const lv_img_dsc_t background3;
-extern const lv_img_dsc_t background4;
-extern const lv_img_dsc_t background5;
-extern const lv_img_dsc_t background6;
 extern const lv_img_dsc_t ArrowLeft;
 extern const lv_img_dsc_t ArrowRight;
 extern const lv_img_dsc_t bubble; // Imagen "bubble"
@@ -17,7 +12,7 @@ extern ScreenManager screenManager;
 void RoomSelectionScreen::load() {
     // Inicializar las habitaciones disponibles en el orden especificado
     roomNames = {"Bedroom", "Bathroom", "Kitchen", "LivingRoom", "Garden", "Outside"};
-    roomImages = {&background1, &background2, &background3, &background4, &background5, &background6};
+    roomImages = {&background1, &background1, &background1, &background1, &background1, &background1};
 
     // Crear la imagen de fondo
     backgroundImage = lv_img_create(lv_scr_act());

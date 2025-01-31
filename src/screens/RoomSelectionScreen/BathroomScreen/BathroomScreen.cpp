@@ -1,12 +1,12 @@
 #include "BathroomScreen.h"
 #include "../../ScreenManager.h"
 
-extern const lv_img_dsc_t background2; // Imagen de fondo correspondiente
+extern const lv_img_dsc_t background1; // Imagen de fondo correspondiente
 extern ScreenManager screenManager;
 
 void BathroomScreen::load() {
     backgroundImage = lv_img_create(lv_scr_act());
-    lv_img_set_src(backgroundImage, &background2);
+    lv_img_set_src(backgroundImage, &background1);
     lv_obj_set_size(backgroundImage, 240,280);
     lv_obj_align(backgroundImage, LV_ALIGN_CENTER, 0, 0);
 

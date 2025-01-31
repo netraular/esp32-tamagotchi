@@ -117,6 +117,9 @@ void LoadScreen::handleButtonEvent(const ButtonState& state, const ButtonChange&
     if (change.button3Changed && state.button3Pressed) {
         screenManager.setScreen("RoomSelectionScreen");
     }
+    if (change.button4Changed && state.button4Pressed) {
+        screenManager.setScreen("MainMenu");
+    }
 }
 
 void LoadScreen::saveCurrentTime() {

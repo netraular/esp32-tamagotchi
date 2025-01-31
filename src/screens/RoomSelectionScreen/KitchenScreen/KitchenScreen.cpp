@@ -15,7 +15,7 @@ LV_IMG_DECLARE(bubblePop10);
 LV_IMG_DECLARE(bubblePop11);
 LV_IMG_DECLARE(bubblePop12);
 
-extern const lv_img_dsc_t background3; // Imagen de fondo correspondiente
+extern const lv_img_dsc_t background1; // Imagen de fondo correspondiente
 extern ScreenManager screenManager;
 
 // Callback que se ejecuta al finalizar la animación
@@ -27,7 +27,7 @@ static void animimg_finished_cb(lv_event_t* e) {
 void KitchenScreen::load() {
     // Cargar la imagen de fondo
     backgroundImage = lv_img_create(lv_scr_act());
-    lv_img_set_src(backgroundImage, &background3);
+    lv_img_set_src(backgroundImage, &background1);
     lv_obj_set_size(backgroundImage, 240,280);
     lv_obj_align(backgroundImage, LV_ALIGN_CENTER, 0, 0);
 
