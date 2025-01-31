@@ -4,9 +4,9 @@
 #include "../Screen.h"
 #include <lvgl.h>
 #include <ArduinoJson.h>
-#include <vector>  // Para usar std::vector
-#include <map>     // Para usar std::map
-#include "../ScreenManager.h"
+#include <vector>
+#include <map>
+#include "../ScreenManager.h"  // Ruta corregida
 
 // Declarar sprites y fondo
 extern const lv_img_dsc_t sprite1;
@@ -37,10 +37,13 @@ private:
     lv_obj_t* backgroundImage = nullptr;
     lv_obj_t* animationImage = nullptr;
     lv_obj_t* positionLabel = nullptr;
-    int currentFrame = 0;
-    int currentSpriteIndex = 0;
     int xPos = 120;  // Posición inicial central (240/2)
     int yPos = 140;  // Posición inicial central (280/2)
+
+    // Control de animación
+    bool isAnimating = false;
+    int animationFrameCounter = 0;
+    const int totalAnimationFrames = 15;  // Sprites del 1 al 15
 
     // Estructura para almacenar la animación
     struct AnimationData {

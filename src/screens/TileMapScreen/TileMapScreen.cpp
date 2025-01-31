@@ -55,21 +55,6 @@ bool TileMapScreen::loadAnimationData(const char* path) {
     for (int duration : doc["durations"].as<JsonArray>()) {
         walkAnimation.durations.push_back(duration);
     }
-
-    Serial.println("Animación cargada correctamente:");
-    Serial.print("Nombre: ");
-    Serial.println(walkAnimation.name);
-    Serial.print("Tamaño del frame: ");
-    Serial.print(walkAnimation.frameWidth);
-    Serial.print("x");
-    Serial.println(walkAnimation.frameHeight);
-    Serial.print("Duración de frames: ");
-    for (int d : walkAnimation.durations) {
-        Serial.print(d);
-        Serial.print(" ");
-    }
-    Serial.println();
-
     return true;
 }
 
@@ -94,12 +79,43 @@ void TileMapScreen::load() {
 }
 
 void TileMapScreen::update() {
-    // Animación de sprites
-    currentFrame++;
-    if (currentFrame >= 5) {
-        currentFrame = 0;
-        currentSpriteIndex = (currentSpriteIndex + 1) % 15;
-        lv_img_set_src(animationImage, embeddedSprites[currentSpriteIndex]);
+    if (isAnimating) {
+        animationFrameCounter++;
+        
+        // Actualizar sprite cada 3 frames (ajustable para velocidad)
+        if (animationFrameCounter % 3 == 0) {
+            int currentSprite = (animationFrameCounter / 3) % totalAnimationFrames;
+            lv_img_set_src(animationImage, embeddedSprites[currentSprite]);
+        }
+
+        // Terminar animación después de 15 sprites (1-15)
+        if (animationFrameCounter >= totalAnimationFrames * 3) {
+            isAnimating = false;
+            lv_img_set_src(animationImage, embeddedSprites[0]);  // Volver al sprite 1
+        }
+    } else {
+        // Mostrar sprite 1 si no hay animación ni botones presionados
+        lv_img_set_src(animationImage, embeddedSprites[0]);
+    }
+}
+
+void TileMapScreen::handleButtonEvent(const ButtonState& state, const ButtonChange& change) {
+    // Solo procesar si no hay animación activa
+    if (!isAnimating) {
+        // Verificar si algún botón está presionado
+        if (state.button1Pressed || state.button2Pressed || state.button3Pressed || state.button4Pressed) {
+            // Movimiento
+            if (state.button1Pressed) xPos = (xPos > 0) ? xPos - 1 : 0;
+            if (state.button4Pressed) xPos = (xPos < 239) ? xPos + 1 : 239;
+            if (state.button3Pressed) yPos = (yPos > 0) ? yPos - 1 : 0;
+            if (state.button2Pressed) yPos = (yPos < 279) ? yPos + 1 : 279;
+            
+            updatePosition();
+            
+            // Iniciar animación
+            isAnimating = true;
+            animationFrameCounter = 0;
+        }
     }
 }
 
@@ -110,28 +126,6 @@ void TileMapScreen::updatePosition() {
     // Actualizar texto de la etiqueta
     lv_label_set_text_fmt(positionLabel, "Pos: (%d, %d)", xPos, yPos);
     lv_obj_align(positionLabel, LV_ALIGN_TOP_LEFT, 2, 2);  // Re-alinear para evitar solapamientos
-}
-
-void TileMapScreen::handleButtonEvent(const ButtonState& state, const ButtonChange& change) {
-    // Movimiento con límites de pantalla (240x280)
-    // Movimiento horizontal y vertical simultáneo (diagonales)
-    if (state.button1Pressed) {    // Izquierda
-        xPos = (xPos > 0) ? xPos - 1 : 0;
-    }
-    if (state.button4Pressed) {    // Derecha
-        xPos = (xPos < 239) ? xPos + 1 : 239;
-    }
-    if (state.button3Pressed) {    // Arriba
-        yPos = (yPos > 0) ? yPos - 1 : 0;
-    }
-    if (state.button2Pressed) {    // Abajo
-        yPos = (yPos < 279) ? yPos + 1 : 279;
-    }
-
-    // Actualizar posición solo si algún botón está pulsado
-    if (state.button1Pressed || state.button2Pressed || state.button3Pressed || state.button4Pressed) {
-        updatePosition();
-    }
 }
 
 void TileMapScreen::unload() {
