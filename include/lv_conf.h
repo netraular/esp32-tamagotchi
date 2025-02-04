@@ -51,13 +51,16 @@
 #define LV_LIMITS_INCLUDE       <limits.h>
 #define LV_STDARG_INCLUDE       <stdarg.h>
 
+/*Configuración para usar PSRAM al cargar imagenes png con lodepng*/
 #define LV_MEM_CUSTOM 1
 #define LV_MEM_CUSTOM_ALLOC my_malloc
 #define LV_MEM_CUSTOM_FREE my_free
 
+
+
 #if LV_USE_STDLIB_MALLOC == LV_STDLIB_BUILTIN
     /*Size of the memory available for `lv_malloc()` in bytes (>= 2kB)*/
-    #define LV_MEM_SIZE (256 * 1024U)          /*[bytes]*/
+    #define LV_MEM_SIZE (256U * 1024U)          /*[bytes]*/
 
     /*Size of the memory expand for `lv_malloc()` in bytes*/
     #define LV_MEM_POOL_EXPAND_SIZE 0

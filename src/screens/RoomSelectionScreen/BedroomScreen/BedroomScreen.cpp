@@ -42,9 +42,9 @@ void BedroomScreen::update() {
 void BedroomScreen::updateSprite() {
     for(int i = 0; i < 20; i++) {
         if(useEmbeddedSprites) {
-            lv_img_set_src(animationImages[i], embeddedSprites[currentSpriteIndex+(i%numSprites)]);
+            lv_img_set_src(animationImages[i], embeddedSprites[(currentSpriteIndex+i)%numSprites]);
         } else {
-            lv_img_set_src(animationImages[i], pngPaths[currentSpriteIndex+(i%numSprites)]);
+            lv_img_set_src(animationImages[i], pngPaths[(currentSpriteIndex+i)%numSprites]);
         }
     }
 }
