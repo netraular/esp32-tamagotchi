@@ -84,6 +84,7 @@ void RoomSelectionScreen::load() {
     lv_anim_start(&animBubbleY);
 
     // Actualizar la visualización inicial
+    lv_img_set_src(backgroundImage, roomImages[selectedRoomIndex]);
     updateRoomDisplay();
 
     Serial.println("RoomSelectionScreen cargada.");
@@ -141,8 +142,7 @@ void RoomSelectionScreen::handleButtonEvent(const ButtonState& state, const Butt
 
 
 void RoomSelectionScreen::updateRoomDisplay() {
-    // Actualizar la imagen de fondo
-    lv_img_set_src(backgroundImage, roomImages[selectedRoomIndex]);
+    // Actualizar la imagen de fondo al cambiar room
 
     // Actualizar el nombre de la habitación
     lv_label_set_text(roomLabel, roomNames[selectedRoomIndex]);
