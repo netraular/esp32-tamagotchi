@@ -36,6 +36,11 @@
 #include <LittleFS.h>
 #include <lvgl.h>
 
+#include "esp_heap_caps.h"
+
+void *my_malloc(size_t size) {
+    return heap_caps_malloc(size, MALLOC_CAP_SPIRAM);  // Asigna memoria en PSRAM
+}
 // Global objects
 TFT_eSPI tft;
 ScreenManager screenManager(tft);
@@ -128,6 +133,10 @@ static lv_fs_res_t lvgl_fs_tell(lv_fs_drv_t* drv, void* file_p, uint32_t* pos_p)
 void setup() {
     Serial.begin(115200);
     Serial.println("Initializing system...");
+    size_t free_psram = heap_caps_get_free_size(MALLOC_CAP_SPIRAM);
+    size_t free_internal = heap_caps_get_free_size(MALLOC_CAP_INTERNAL);
+    printf("Memoria PSRAM libre: %d bytes\n", free_psram);
+    printf("Memoria interna libre: %d bytes\n", free_internal);
     
     // Initialize LittleFS and create initial files
     if (!persistentDataManager.init()) {

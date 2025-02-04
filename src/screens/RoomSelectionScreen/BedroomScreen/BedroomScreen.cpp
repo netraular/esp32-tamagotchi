@@ -13,7 +13,7 @@ void BedroomScreen::load() {
     lv_obj_align(roomLabel, LV_ALIGN_TOP_LEFT, 2, 2);
 
     // Crear imagen de animación
-    for(int i = 0; i < 6; i++) {
+    for(int i = 0; i < 20; i++) {
         animationImages[i] = lv_img_create(lv_scr_act());
         int col = i % 4;       // 4 columnas (0-3)
         int row = i / 4;       // 5 filas (0-4)
@@ -40,7 +40,7 @@ void BedroomScreen::update() {
 }
 
 void BedroomScreen::updateSprite() {
-    for(int i = 0; i < 6; i++) {
+    for(int i = 0; i < 20; i++) {
         if(useEmbeddedSprites) {
             lv_img_set_src(animationImages[i], embeddedSprites[currentSpriteIndex+(i%numSprites)]);
         } else {
